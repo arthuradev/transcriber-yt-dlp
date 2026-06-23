@@ -3,5 +3,6 @@
 Local persistence: user config, history, archive, non-sensitive logs, and
 reports.
 
-Phase 1 placeholder: no storage is implemented yet.
+Phase 4 adds ``ConfigStore`` (YAML user-config persistence). Secrets are never
+stored here.
 """

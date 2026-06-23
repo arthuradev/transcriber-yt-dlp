@@ -7,7 +7,37 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 4: Config, language, and first-run setup.
+- Phase 5: WeatherAPI and personalization (optional weather/time display).
+
+## [v0.4.0] - 2026-06-23
+
+### Added
+- Pydantic user-configuration models (`transcriber.config.models`): `UserConfig`
+  with `ui`, `weather`, `llm`, `cookies`, `paths`, `gpu`, and a `Language` enum
+  (pt-BR / en-US). No secrets are modelled — API keys stay in `.env`.
+- YAML config persistence (`ConfigStore`) implementing a `ConfigRepository`
+  port; default location `%APPDATA%\Transcriber\config.yaml`.
+- First-run setup: `FirstRunService` (application) drives a wizard via the
+  `FirstRunPrompts` port and persists the config; `QuestionaryFirstRunPrompts`
+  (ui) provides the localized prompts with a bilingual language question.
+- Internationalization: `Translator` with a pt-BR / en-US message catalog;
+  the menu, placeholders, and goodbye are now localized.
+- `python -m transcriber` runs first-run setup when needed, otherwise loads the
+  saved config and applies the chosen theme and language.
+- ADR 0013 (secrets in env, not config) and a configuration design doc.
+
+### Changed
+- Menu API is translator-driven (`MENU_ORDER`, `build_menu_items`,
+  `label_for(action, translator)`, `prompt_main_menu(translator)`).
+- `AppShell` accepts a `Translator`.
+- Added runtime dependencies `pydantic` and `pyyaml` (dev: `types-PyYAML`).
+
+### Tests
+- Added config-model, config-store, i18n, and first-run tests, plus an
+  architecture test that the application layer imports no ui/adapters.
+
+### Notes
+- No weather/LLM API calls yet; first run collects preferences only.
 
 ## [v0.3.0] - 2026-06-23
 

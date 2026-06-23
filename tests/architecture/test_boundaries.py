@@ -68,3 +68,15 @@ def test_ui_does_not_import_adapters() -> None:
             if module == "transcriber.adapters" or module.startswith("transcriber.adapters."):
                 offenders.append(f"{path.name}: {module}")
     assert not offenders, f"ui layer imports adapters directly: {offenders}"
+
+
+def test_application_does_not_import_ui_or_adapters() -> None:
+    forbidden = ("transcriber.ui", "transcriber.adapters")
+    offenders: list[str] = []
+    for path in sorted(_package_dir("application").rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for module in _imported_modules(tree):
+            for prefix in forbidden:
+                if module == prefix or module.startswith(f"{prefix}."):
+                    offenders.append(f"{path.name}: {module}")
+    assert not offenders, f"application layer imports ui/adapters: {offenders}"

@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 3 — Themes, ASCII art, clean screen.
+Phase 4 — Config, language, first-run setup.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -46,11 +46,25 @@ Phase 3 — Themes, ASCII art, clean screen.
 - [x] Update CHANGELOG and TASKS.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.3.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 4.
+- [x] Ask user permission to proceed to Phase 4.
+
+## Phase 4 checklist
+- [x] Add Pydantic user-config models and `Language` enum.
+- [x] Add YAML config persistence (`ConfigStore`) + `ConfigRepository` port.
+- [x] Add i18n `Translator` with pt-BR / en-US catalog.
+- [x] Localize menu/shell strings.
+- [x] Add first-run wizard (`FirstRunService` + `FirstRunPrompts` port + UI impl).
+- [x] Wire first-run/config load into startup.
+- [x] Keep secrets in `.env` (ADR 0013); none in persisted config.
+- [x] Add config/i18n/first-run tests + application boundary test.
+- [x] Update CHANGELOG and TASKS; add configuration design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.4.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 5.
 
 ## Backlog notes
 - No functional media download yet.
-- No weather implementation yet.
+- No weather implementation yet (Phase 5 adds WeatherAPI calls).
 - No transcription implementation yet.
-- Theme selection from settings/first-run and YAML ASCII config are Phase 4.
+- API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

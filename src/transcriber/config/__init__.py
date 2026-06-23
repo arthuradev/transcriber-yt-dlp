@@ -2,7 +2,8 @@
 
 User-local configuration models, defaults, and loading. Configuration values
 (weather city, API providers, keys, output folders, theme, language, cookie
-choices) are always local and never committed.
+choices) are always local and never committed. API keys are never modelled
+here; they live in the environment / ``.env``.
 
-Phase 1 placeholder: no config models are implemented yet.
+Phase 4 adds the Pydantic user-configuration models (see ``models``).
 """
