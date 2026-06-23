@@ -7,7 +7,33 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 6: yt-dlp metadata probe (probe URLs and show metadata).
+- Phase 7: Download planner and dry-run (safe operation plans).
+
+## [v0.6.0] - 2026-06-23
+
+### Added
+- yt-dlp metadata probe (probe only; no downloads):
+  - `core.media`: `MediaFormat`, `MediaMetadata`, `PlaylistEntry`,
+    `PlaylistMetadata`, `ProbeResult`, and `MediaError` (pure domain).
+  - `ports.media_engine.MediaEnginePort` — `probe(url) -> ProbeResult`.
+  - `adapters.yt_dlp_engine.YtDlpEngine` — the only module importing yt-dlp;
+    probes with `download=False` and `extract_flat`; injectable extractor for
+    offline tests.
+  - `adapters.yt_dlp_mapping.map_info` — strictly-typed dict -> domain mapping.
+  - `application.probe.MediaProbeService` — input validation + delegation.
+  - `ui.media.render_metadata` — title/site/duration/url, formats table, or
+    playlist item count + entry titles. Added media i18n keys (pt-BR / en-US).
+
+### Changed
+- Added runtime dependency `yt-dlp`.
+
+### Tests
+- Added mapping, probe-service, engine (injected extractor), and renderer tests.
+
+### Notes
+- yt-dlp ships only partial private inline types; they are suppressed solely in
+  the engine adapter and isolated from the rest of the codebase.
+- Interactive URL input is wired with the download flow in Phase 7.
 
 ## [v0.5.0] - 2026-06-23
 

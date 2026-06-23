@@ -31,3 +31,22 @@ Cookies are advanced and protected. Browser cookies may be used only with explic
 
 ## Profiles
 See `configs/profiles.example.yaml`.
+
+## Probe implementation (Phase 6)
+Metadata probing (no downloads yet):
+- `core.media` — pure domain: `MediaFormat`, `MediaMetadata`, `PlaylistEntry`,
+  `PlaylistMetadata`, `ProbeResult` (= single | playlist), and `MediaError`.
+- `ports.media_engine.MediaEnginePort` — `probe(url) -> ProbeResult`.
+- `adapters.yt_dlp_engine.YtDlpEngine` — the only module importing yt-dlp;
+  probes with `download=False` and `extract_flat="in_playlist"`. The info
+  extractor is injectable for offline tests. yt-dlp's partial private types are
+  suppressed only in this file.
+- `adapters.yt_dlp_mapping.map_info` — strictly-typed dict -> domain mapping
+  (no yt-dlp import), unit-tested with plain dicts.
+- `application.probe.MediaProbeService` — validates input and delegates to the
+  port (the UI never calls the engine directly).
+- `ui.media.render_metadata` — shows title/site/duration/url and a formats table
+  (single) or item count + entry titles (playlist).
+
+Interactive URL input is wired into the menu with the download planner/dry-run
+flow in Phase 7.

@@ -94,6 +94,50 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "Weather unavailable",
         Language.PT_BR: "Clima indisponível",
     },
+    "media.metadata_title": {
+        Language.EN_US: "Media metadata",
+        Language.PT_BR: "Metadados da mídia",
+    },
+    "media.title": {
+        Language.EN_US: "Title",
+        Language.PT_BR: "Título",
+    },
+    "media.site": {
+        Language.EN_US: "Site",
+        Language.PT_BR: "Site",
+    },
+    "media.duration": {
+        Language.EN_US: "Duration",
+        Language.PT_BR: "Duração",
+    },
+    "media.uploader": {
+        Language.EN_US: "Uploader",
+        Language.PT_BR: "Autor",
+    },
+    "media.url": {
+        Language.EN_US: "URL",
+        Language.PT_BR: "URL",
+    },
+    "media.formats": {
+        Language.EN_US: "Formats",
+        Language.PT_BR: "Formatos",
+    },
+    "media.playlist": {
+        Language.EN_US: "Playlist",
+        Language.PT_BR: "Playlist",
+    },
+    "media.items": {
+        Language.EN_US: "Items",
+        Language.PT_BR: "Itens",
+    },
+    "media.more_formats": {
+        Language.EN_US: "... and {count} more format(s)",
+        Language.PT_BR: "... e mais {count} formato(s)",
+    },
+    "media.more_items": {
+        Language.EN_US: "... and {count} more item(s)",
+        Language.PT_BR: "... e mais {count} item(ns)",
+    },
 }
 
 

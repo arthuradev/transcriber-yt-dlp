@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 5 — WeatherAPI and personalization.
+Phase 6 — yt-dlp metadata probe.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -73,10 +73,23 @@ Phase 5 — WeatherAPI and personalization.
 - [x] Update CHANGELOG, TASKS, weather design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.5.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 6.
+- [x] Ask user permission to proceed to Phase 6.
+
+## Phase 6 checklist
+- [x] Add media domain (`core.media`) + `MediaEnginePort`.
+- [x] Add `YtDlpEngine` (probe only, injectable extractor, yt-dlp isolated).
+- [x] Add strictly-typed `map_info` dict -> domain mapping.
+- [x] Add `MediaProbeService` (application).
+- [x] Add `render_metadata` UI + media i18n keys.
+- [x] Add mapping/service/engine/renderer tests.
+- [x] Update CHANGELOG, TASKS, media-download design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.6.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 7.
 
 ## Backlog notes
-- No functional media download yet (Phase 6 adds yt-dlp metadata probe).
+- No downloads yet (probe only); download planner/dry-run is Phase 7.
+- Interactive URL input wired into the menu in Phase 7.
 - No transcription implementation yet.
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.
