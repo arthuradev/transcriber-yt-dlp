@@ -28,7 +28,7 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ### Changed
 - `build_console` now takes an optional theme name (defaults to `default`).
 - `AppShell` accepts `theme_name` and `welcome_art`.
-- CI actions bumped (checkout v7, setup-python v6, setup-uv v8) to run on
+- CI actions bumped (checkout v7, setup-python v6, setup-uv v8.2.0) to run on
   Node 24 and clear the Node 20 deprecation warning.
 
 ### Tests
