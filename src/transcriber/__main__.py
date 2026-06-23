@@ -1,21 +1,18 @@
 """Application entry point.
 
-Phase 1 ships only the project skeleton. No functional behavior is wired yet;
-this entry point exists so the package is runnable and importable.
+Launches the TUI shell (startup banner, animation, and main menu). Menu actions
+are placeholders until later phases wire the real download/transcription/cleanup
+use cases.
 """
 
 from __future__ import annotations
 
-from transcriber import __version__
-
 
 def main() -> int:
-    """Run the application.
+    """Run the application. Returns a process exit code."""
+    from transcriber.ui.shell import AppShell
 
-    Returns a process exit code. Phase 1 is a non-functional skeleton.
-    """
-    print(f"Transcriber v{__version__} - skeleton (Phase 1). No operations are wired yet.")
-    return 0
+    return AppShell().run()
 
 
 if __name__ == "__main__":

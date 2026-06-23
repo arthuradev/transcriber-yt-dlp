@@ -26,9 +26,13 @@ FORBIDDEN_IMPORTS: tuple[str, ...] = (
 )
 
 
-def _core_dir() -> Path:
+def _package_dir(name: str) -> Path:
     assert transcriber.__file__ is not None
-    return Path(transcriber.__file__).resolve().parent / "core"
+    return Path(transcriber.__file__).resolve().parent / name
+
+
+def _core_dir() -> Path:
+    return _package_dir("core")
 
 
 def _imported_modules(tree: ast.Module) -> list[str]:
@@ -54,3 +58,13 @@ def test_core_has_no_forbidden_imports() -> None:
                 if module == forbidden or module.startswith(f"{forbidden}."):
                     offenders.append(f"{path.name}: {module}")
     assert not offenders, f"core layer imports forbidden modules: {offenders}"
+
+
+def test_ui_does_not_import_adapters() -> None:
+    offenders: list[str] = []
+    for path in sorted(_package_dir("ui").rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for module in _imported_modules(tree):
+            if module == "transcriber.adapters" or module.startswith("transcriber.adapters."):
+                offenders.append(f"{path.name}: {module}")
+    assert not offenders, f"ui layer imports adapters directly: {offenders}"

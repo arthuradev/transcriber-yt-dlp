@@ -8,7 +8,11 @@ license = { text = "Apache-2.0" }
 authors = [
   { name = "Arthur Alberto" }
 ]
-dependencies = []
+dependencies = [
+    "pyfiglet>=1.0.4",
+    "questionary>=2.1.1",
+    "rich>=15.0.0",
+]
 
 [project.scripts]
 transcriber = "transcriber.__main__:main"
