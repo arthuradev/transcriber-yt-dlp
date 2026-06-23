@@ -90,6 +90,10 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "Setup complete.",
         Language.PT_BR: "Configuração concluída.",
     },
+    "weather.unavailable": {
+        Language.EN_US: "Weather unavailable",
+        Language.PT_BR: "Clima indisponível",
+    },
 }
 
 

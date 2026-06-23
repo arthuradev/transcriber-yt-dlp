@@ -23,6 +23,7 @@ from transcriber.ui.screens import clear_screen
 from transcriber.ui.theme import DEFAULT_THEME_NAME
 
 SelectAction = Callable[[], MenuAction]
+WeatherLineProvider = Callable[[], str | None]
 
 WELCOME_ART_MIN_WIDTH = 110
 
@@ -39,12 +40,14 @@ class AppShell:
         theme_name: str = DEFAULT_THEME_NAME,
         translator: Translator | None = None,
         welcome_art: AsciiArt | None = None,
+        weather_line_provider: WeatherLineProvider | None = None,
     ) -> None:
         self.console = console if console is not None else build_console(theme_name)
         self._translator = translator if translator is not None else Translator()
         self._select_action = select_action if select_action is not None else self._default_select
         self._animate = animate
         self._welcome_art = welcome_art
+        self._weather_line_provider = weather_line_provider
 
     def _default_select(self) -> MenuAction:
         return prompt_main_menu(self._translator)
@@ -71,6 +74,10 @@ class AppShell:
             and fits(self._welcome_art, self.console.width, min_width=WELCOME_ART_MIN_WIDTH)
         ):
             render_art(self.console, self._welcome_art)
+        if self._weather_line_provider is not None:
+            line = self._weather_line_provider()
+            if line:
+                self.console.print(line)
 
     def _render_placeholder(self, action: MenuAction) -> None:
         message = self._translator(

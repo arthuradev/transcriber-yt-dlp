@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 4 — Config, language, first-run setup.
+Phase 5 — WeatherAPI and personalization.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -60,11 +60,23 @@ Phase 4 — Config, language, first-run setup.
 - [x] Update CHANGELOG and TASKS; add configuration design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.4.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 5.
+- [x] Ask user permission to proceed to Phase 5.
+
+## Phase 5 checklist
+- [x] Add `WeatherSnapshot`/`WeatherError` domain + `WeatherPort`.
+- [x] Add `WeatherApiAdapter` (injectable transport, key redaction).
+- [x] Add `WeatherService` with TTL cache and graceful degradation.
+- [x] Add weather display + discreet unavailable warning; wire into header.
+- [x] Read key from `.env` via `config.secrets`; never log it.
+- [x] Ensure weather never blocks startup.
+- [x] Add weather adapter/service/ui tests.
+- [x] Update CHANGELOG, TASKS, weather design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.5.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 6.
 
 ## Backlog notes
-- No functional media download yet.
-- No weather implementation yet (Phase 5 adds WeatherAPI calls).
+- No functional media download yet (Phase 6 adds yt-dlp metadata probe).
 - No transcription implementation yet.
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

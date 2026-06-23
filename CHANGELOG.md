@@ -7,7 +7,35 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 5: WeatherAPI and personalization (optional weather/time display).
+- Phase 6: yt-dlp metadata probe (probe URLs and show metadata).
+
+## [v0.5.0] - 2026-06-23
+
+### Added
+- Optional weather/time display behind a `WeatherPort`:
+  - `core.weather.WeatherSnapshot` / `WeatherError` (pure domain).
+  - `adapters.weatherapi.WeatherApiAdapter` (WeatherAPI.com `current.json`) with
+    an injectable HTTP transport; the API key is read from `WEATHERAPI_KEY`,
+    never logged, and redacted from error detail.
+  - `application.weather.WeatherService` with a TTL cache (`cache_minutes`) and
+    graceful degradation (failures become `None`).
+  - `ui.weather` formatting and a discreet "unavailable" warning; the shell shows
+    the weather line at the top of the header.
+- `config.secrets.weather_api_key()` to read the key from the environment.
+- i18n key `weather.unavailable` (pt-BR / en-US).
+
+### Changed
+- `AppShell` accepts an optional `weather_line_provider`.
+- Startup wires weather only when `enabled` and `show_on_startup`; with no key it
+  shows the discreet warning. Weather never blocks startup.
+
+### Tests
+- Added weather adapter (incl. key redaction), service (caching/degradation), and
+  UI/shell-integration tests.
+
+### Notes
+- No new third-party dependency: the adapter uses stdlib `urllib`.
+- API keys remain in `.env` only (ADR 0013).
 
 ## [v0.4.0] - 2026-06-23
 
