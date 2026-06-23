@@ -1,0 +1,36 @@
+id = "example_module"
+name = "Example Module"
+version = "0.1.0"
+status = "experimental"
+
+[capabilities]
+provides = []
+
+[contracts]
+implements = []
+
+[dependencies]
+packages = []
+external = []
+
+[permissions]
+network = false
+filesystem = false
+shell = false
+secrets = []
+
+[risk]
+default = "low"
+sensitive_actions = []
+
+[dry_run]
+supported = true
+
+[rollback]
+supported = "none"
+
+[health_checks]
+checks = []
+
+[tests]
+required = []

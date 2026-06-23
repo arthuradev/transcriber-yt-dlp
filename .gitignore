@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.venv/
+venv/
+
+# Local config and secrets
+.env
+.env.*
+!.env.example
+config.yaml
+*.local.yaml
+cookies.txt
+*cookies*.txt
+*.token
+*.key
+
+# User data
+logs/
+data/
+cache/
+downloads/
+transcripts/
+reports/private/
+*.sqlite
+*.sqlite3
+*.db
+
+# Media and generated outputs
+*.mp4
+*.mkv
+*.webm
+*.mp3
+*.m4a
+*.wav
+*.flac
+*.srt
+*.vtt
+
+# Models/cache
+models/
+model_cache/
+whisper_cache/
+
+# Windows
+Thumbs.db
+Desktop.ini

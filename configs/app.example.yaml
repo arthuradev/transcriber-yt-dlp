@@ -1,0 +1,31 @@
+app:
+  display_name: "Transcriber"
+  package_name: "transcriber"
+  platform: "windows"
+  language: null
+
+ui:
+  theme: "default"
+  dark_mode_only: true
+  startup_animation: true
+  figlet_font: "bloody"
+  random_figlet_font: false
+  subtitle: "Download • Transcription • Cleanup"
+  try_fullscreen: true
+  fallback_maximized: true
+  show_f11_hint: true
+  clear_screen_between_operations: true
+  wait_for_enter_after_operation: true
+
+personalization:
+  user_name: ""
+  show_weather_on_startup: false
+  weather_cache_minutes: 15
+
+paths:
+  default_download_dir: "downloads"
+  ask_output_dir_on_first_run: true
+  organize_by_site: true
+  organize_by_date: true
+  include_media_id_in_filename: true
+  overwrite_policy: "ask"

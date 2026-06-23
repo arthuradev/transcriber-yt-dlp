@@ -1,0 +1,20 @@
+weather:
+  provider: "weatherapi"
+  enabled: false
+  query: ""
+  units: "metric"
+
+llm:
+  enabled: false
+  provider: "deepseek"
+  base_url: "https://api.deepseek.com"
+  model: "deepseek-v4-pro"
+  ask_before_cleanup: true
+  cleanup_mode: "format_only"
+
+cookies:
+  enabled: false
+  allow_browser_cookies: true
+  browser: null
+  require_confirmation: true
+  redact_from_logs: true

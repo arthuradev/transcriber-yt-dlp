@@ -1,0 +1,55 @@
+download_profiles:
+  video_best:
+    kind: "video"
+    format: "bv*+ba/b"
+    requires_ffmpeg: "recommended"
+
+  video_1080p:
+    kind: "video"
+    format: "bv*[height<=1080]+ba/b[height<=1080]"
+    requires_ffmpeg: true
+
+  video_720p:
+    kind: "video"
+    format: "bv*[height<=720]+ba/b[height<=720]"
+    requires_ffmpeg: true
+
+  audio_best:
+    kind: "audio"
+    format: "ba/b"
+    requires_ffmpeg: false
+
+  audio_mp3:
+    kind: "audio"
+    format: "ba/b"
+    extract_audio: true
+    audio_format: "mp3"
+    requires_ffmpeg: true
+
+  audio_m4a:
+    kind: "audio"
+    format: "m4a/ba/b"
+    extract_audio: true
+    audio_format: "m4a"
+    requires_ffmpeg: true
+
+  metadata_only:
+    kind: "metadata"
+    download: false
+
+  transcript_only:
+    kind: "transcript"
+    prefer_existing_subtitles: true
+    transcribe_if_missing: true
+
+cleanup_profiles:
+  readable:
+    behavior: "Clean punctuation, paragraphs, and readability without changing meaning."
+  study_notes:
+    behavior: "Format as study notes without adding facts."
+  article:
+    behavior: "Format as a readable article without adding facts."
+  subtitle_cleanup:
+    behavior: "Clean subtitles while preserving timing when possible."
+  verbatim_clean:
+    behavior: "Preserve wording as much as possible; only punctuation and spacing."

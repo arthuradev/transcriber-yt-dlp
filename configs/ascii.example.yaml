@@ -1,0 +1,16 @@
+ascii:
+  enabled: true
+  show_on_welcome: true
+  show_on_success: true
+  show_on_failure: false
+  preserve_raw: true
+  allow_color_overlay: false
+  min_terminal_width: 110
+  center_if_fits: true
+  fallback_if_too_small: "compact_message"
+  success_min_display_seconds: 3
+  wait_for_enter_after_success: true
+  folders:
+    welcome: "assets/ascii/welcome"
+    success: "assets/ascii/success"
+    custom: "assets/ascii/custom"

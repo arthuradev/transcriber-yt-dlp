@@ -1,0 +1,20 @@
+safety:
+  dry_run_required_for_all_operations: true
+  batch_normal_limit: 5
+  batch_high_risk_limit: 50
+  require_confirmation_for_cookies: true
+  require_confirmation_for_overwrite: true
+  block_cpu_fallback: true
+  redact_private_urls: true
+  redact_transcript_logs_when_llm_enabled: true
+
+risk_levels:
+  low:
+    confirmation: false
+  medium:
+    confirmation: true
+  high:
+    confirmation: true
+    strong_confirmation: true
+  critical:
+    blocked_by_default: true
