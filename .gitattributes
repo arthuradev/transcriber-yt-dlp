@@ -1,0 +1,12 @@
+# Normalize line endings to LF in the repository and the working tree.
+# This keeps the repo consistent on Windows and silences CRLF conversion warnings.
+* text=auto eol=lf
+
+# Treat ASCII art as text but never let tooling reflow it.
+*.txt text eol=lf
+
+# Binary assets (no line-ending conversion).
+*.png binary
+*.ico binary
+*.jpg binary
+*.gif binary

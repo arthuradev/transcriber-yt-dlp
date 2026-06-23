@@ -7,7 +7,37 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 3: Themes, ASCII art, and clean-screen success flow.
+- Phase 4: Config, language, and first-run setup.
+
+## [v0.3.0] - 2026-06-23
+
+### Added
+- Dark theme registry with six themes (default, purple, red, blue, monochrome,
+  anime); `build_console(theme_name)` selects one, all sharing the same style
+  keys.
+- ASCII art renderer (`transcriber.ui.ascii_art`): UTF-8 loading, cell-accurate
+  width measurement (correct for Unicode/braille art), terminal-fit checks,
+  random selection, and no-wrap centered rendering that preserves raw lines.
+- Clean-screen success flow (`transcriber.ui.screens`): `clear_screen` and
+  `show_success_screen` (summary panel + optional success art + minimum display
+  time + Press-Enter-to-return), with injectable sleep for testability.
+- Welcome art at startup: the shell renders a fitting welcome art under the
+  banner; `python -m transcriber` discovers `assets/ascii/welcome` and picks one.
+- `.gitattributes` normalizing line endings to LF.
+
+### Changed
+- `build_console` now takes an optional theme name (defaults to `default`).
+- `AppShell` accepts `theme_name` and `welcome_art`.
+- CI actions bumped (checkout v7, setup-python v6, setup-uv v8) to run on
+  Node 24 and clear the Node 20 deprecation warning.
+
+### Tests
+- Added theme, ASCII art, and success-screen tests.
+
+### Notes
+- Theme *selection from settings/first-run* and YAML-driven ASCII config are
+  Phase 4; the renderer/registry contracts are in place now.
+- No download/transcription/cleanup behavior yet.
 
 ## [v0.2.0] - 2026-06-23
 

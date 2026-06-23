@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 2 — UI base (Rich/Questionary/Pyfiglet startup and menu).
+Phase 3 — Themes, ASCII art, clean screen.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -32,11 +32,25 @@ Phase 2 — UI base (Rich/Questionary/Pyfiglet startup and menu).
 - [x] Update CHANGELOG and TASKS.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.2.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 3.
+- [x] Ask user permission to proceed to Phase 3.
+
+## Phase 3 checklist
+- [x] Add dark theme registry (default, purple, red, blue, monochrome, anime).
+- [x] Make `build_console`/`AppShell` theme-aware.
+- [x] Add ASCII art renderer with cell-accurate width and fit checks.
+- [x] Add no-wrap centered rendering with compact fallback.
+- [x] Add clean-screen success flow (`show_success_screen`).
+- [x] Wire welcome art at startup.
+- [x] Add theme/ascii/screen tests.
+- [x] Housekeeping: add `.gitattributes`; bump CI action versions.
+- [x] Update CHANGELOG and TASKS.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.3.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 4.
 
 ## Backlog notes
 - No functional media download yet.
 - No weather implementation yet.
 - No transcription implementation yet.
-- Theme selection and success-art clean-screen flow are Phase 3.
+- Theme selection from settings/first-run and YAML ASCII config are Phase 4.
 - Do not skip ahead.
