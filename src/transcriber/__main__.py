@@ -45,6 +45,8 @@ def _build_action_handler(
     console: Console, config: UserConfig, translator: Translator
 ) -> Callable[[MenuAction], bool]:
     """Build the menu-action handler routing download actions to the dry-run flow."""
+    from pathlib import Path
+
     from transcriber.adapters.faster_whisper_engine import FasterWhisperEngine
     from transcriber.adapters.local_files import LocalTextFileReader
     from transcriber.adapters.openai_compatible import OpenAICompatibleProvider
@@ -57,8 +59,11 @@ def _build_action_handler(
     from transcriber.application.subtitles import SubtitleService
     from transcriber.application.transcription import TranscriptionService
     from transcriber.config.secrets import llm_api_key
+    from transcriber.observability.logs import FileLogger, default_log_path
+    from transcriber.observability.recorder import OperationRecorder
     from transcriber.safety.audit import AuditLog
     from transcriber.storage.archive import FileDownloadArchive, default_archive_path
+    from transcriber.storage.history import SqliteHistoryRepository, default_history_path
     from transcriber.ui.ascii_art import choose_art, load_art_dir, locate_ascii_dir
     from transcriber.ui.cleanup_flow import CleanupFlow, QuestionaryCleanupFlowPrompts
     from transcriber.ui.download_flow import DownloadFlow, QuestionaryDownloadFlowPrompts
@@ -88,6 +93,11 @@ def _build_action_handler(
     )
     cleanup_prompts = QuestionaryCleanupFlowPrompts(translator)
     audit = AuditLog()
+    recorder = OperationRecorder(
+        history=SqliteHistoryRepository(default_history_path()),
+        logger=FileLogger(default_log_path()),
+        report_dir=str(Path(config.paths.download_dir) / "reports"),
+    )
     success_dir = locate_ascii_dir("success")
     success_art = choose_art(load_art_dir(success_dir)) if success_dir is not None else None
 
@@ -143,6 +153,7 @@ def _build_action_handler(
             success_art=success_art,
             cookies=config.cookies,
             audit=audit,
+            recorder=recorder,
         ).run(category)
         return True
 

@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 14 — Safety pipeline and cookies.
+Phase 15 — History, logs, reports.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -190,10 +190,22 @@ Phase 14 — Safety pipeline and cookies.
 - [x] Update CHANGELOG, TASKS, safety-pipeline design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.14.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 15.
+- [x] Ask user permission to proceed to Phase 15.
+
+## Phase 15 checklist
+- [x] Add history domain + `HistoryRepositoryPort` + SQLite repository.
+- [x] Add operation report domain + JSON/Markdown formatters.
+- [x] Add redacted `FileLogger` (no private content).
+- [x] Add `OperationRecorder` (history + log + report file).
+- [x] Add `build_download_report`; wire recorder into the download flow.
+- [x] Add history/report/log/recorder/reporting/flow tests; verify end-to-end.
+- [x] Update CHANGELOG, TASKS; add history-and-reports design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.15.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 16.
 
 ## Backlog notes
-- Cookies: never auto-enabled, never committed, never logged.
-- Audit persistence + reports land in Phase 15.
+- DB, logs, reports are user-local and never committed; no private content.
+- Coverage target + hard architecture gates land in Phase 16.
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

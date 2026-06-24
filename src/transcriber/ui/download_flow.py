@@ -22,6 +22,7 @@ from transcriber.application.batch import BatchProbeService
 from transcriber.application.executor import DownloadExecutor
 from transcriber.application.planner import DownloadPlanner
 from transcriber.application.probe import MediaProbeService
+from transcriber.application.reporting import build_download_report
 from transcriber.config.models import CookiesConfig, PathsConfig
 from transcriber.core.media import MediaError, MediaFormat, MediaMetadata, ProbeResult
 from transcriber.core.plan import DownloadPlan
@@ -31,6 +32,7 @@ from transcriber.core.profiles import (
     manual_profile,
     profiles_for_category,
 )
+from transcriber.observability.recorder import OperationRecorder
 from transcriber.safety.audit import AuditLog
 from transcriber.safety.cookies import evaluate_cookies
 from transcriber.ui.ascii_art import AsciiArt, fits, render_art
@@ -153,6 +155,7 @@ class DownloadFlow:
         success_art: AsciiArt | None = None,
         cookies: CookiesConfig | None = None,
         audit: AuditLog | None = None,
+        recorder: OperationRecorder | None = None,
     ) -> None:
         self._probe_service = probe_service
         self._planner = planner
@@ -165,6 +168,7 @@ class DownloadFlow:
         self._success_art = success_art
         self._cookies = cookies if cookies is not None else CookiesConfig()
         self._audit = audit
+        self._recorder = recorder
 
     def run(self, category: str) -> None:
         self._run(category)
@@ -267,6 +271,8 @@ class DownloadFlow:
                 f"skipped={outcome.skipped} failed={outcome.failed} "
                 f"cookies={'yes' if plan.cookies_from_browser else 'no'}",
             )
+        if self._recorder is not None:
+            self._recorder.record(build_download_report(plan, outcome))
         if (
             outcome.ok
             and self._success_art is not None

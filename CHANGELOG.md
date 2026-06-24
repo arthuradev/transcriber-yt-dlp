@@ -7,7 +7,32 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 15: History, logs, reports (SQLite/history and report output).
+- Phase 16: Complete tests and architecture checks (coverage target, hard gates).
+
+## [v0.15.0] - 2026-06-24
+
+### Added
+- Operation history, logs, and reports (all user-local, secret-free):
+  - `core.history.HistoryEntry` / `core.report.OperationReport` (pure).
+  - `application.reporting.build_download_report` (status ok/partial/failed).
+  - `ports.history.HistoryRepositoryPort` + `storage.history.SqliteHistoryRepository`
+    (stdlib SQLite, `history.sqlite`, gitignored).
+  - `observability.report_format` (`report_to_json` / `report_to_markdown`).
+  - `observability.logs.FileLogger` (timestamped, redacted via `safety.redaction`).
+  - `observability.recorder.OperationRecorder` (history + log + JSON report file).
+- The download flow records a report after execution via an injected recorder;
+  reports go to the download dir's `reports/` subfolder.
+
+### Tests
+- Added history-model, SQLite-history, report-format, logs, recorder, reporting,
+  and flow-history tests; verified the pipeline end-to-end (history row, report
+  file, redacted log with no secret leak).
+
+### Notes
+- No new dependency (stdlib `sqlite3`). DB, logs, and reports are user-local and
+  never committed.
+- No private content (transcripts, token URLs, secrets) is written to logs,
+  history, or reports.
 
 ## [v0.14.0] - 2026-06-24
 
