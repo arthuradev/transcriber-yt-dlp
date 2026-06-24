@@ -5,5 +5,6 @@ WeatherAPI, DeepSeek/OpenAI-compatible providers, faster-whisper, local
 filesystem, Windows shell, SQLite).
 
 Phase 5 adds ``WeatherApiAdapter``; Phase 6/8 add ``YtDlpEngine`` (probe +
-download); Phase 10 adds ``LocalTextFileReader``.
+download); Phase 10 adds ``LocalTextFileReader``; Phase 11 adds
+``FasterWhisperEngine`` (GPU-only, optional dependency).
 """

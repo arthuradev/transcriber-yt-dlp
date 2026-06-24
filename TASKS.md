@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 10 — Playlists, batch URLs, folders, duplicates.
+Phase 11 — GPU-only transcription.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -140,10 +140,24 @@ Phase 10 — Playlists, batch URLs, folders, duplicates.
 - [x] Update CHANGELOG, TASKS, media-download design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.10.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 11.
+- [x] Ask user permission to proceed to Phase 11.
+
+## Phase 11 checklist
+- [x] Add transcription domain + serializers (txt/md/srt/vtt/json).
+- [x] Add `TranscriptionEnginePort` + `FasterWhisperEngine` (GPU-only, injectable).
+- [x] Add `TranscriptionService` enforcing GPU-only (no CPU fallback).
+- [x] Add raw transcript output (`save_transcript`).
+- [x] Add `TranscribeFlow` wired to "Transcribe local file".
+- [x] Add `TranscriptionConfig`; faster-whisper as optional extra.
+- [x] Add format/service/engine/store/flow tests; verify flow end-to-end (fakes).
+- [x] Update CHANGELOG, TASKS, transcription design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.11.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 12.
 
 ## Backlog notes
-- Batch limits respected (>5 declared items requires strong confirmation).
-- No transcription implementation yet (Phase 11 adds GPU-only faster-whisper).
+- faster-whisper is optional/heavy/GPU-only; not in CI. Real GPU transcription
+  is unverified by automated tests (injected fakes).
+- Subtitle/transcript download lands in Phase 12.
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

@@ -18,6 +18,14 @@ def test_defaults_are_safe() -> None:
     assert config.gpu.acknowledged_gpu_only is False
 
 
+def test_transcription_defaults() -> None:
+    transcription = UserConfig().transcription
+    assert transcription.model == "large-v3"
+    assert transcription.language == ""
+    assert transcription.translate is False
+    assert transcription.output_format == "txt"
+
+
 def test_invalid_units_rejected() -> None:
     with pytest.raises(ValidationError):
         WeatherConfig.model_validate({"units": "kelvin"})

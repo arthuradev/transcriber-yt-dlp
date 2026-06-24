@@ -75,6 +75,16 @@ class GPUConfig(BaseModel):
     acknowledged_gpu_only: bool = False
 
 
+class TranscriptionConfig(BaseModel):
+    """Transcription preferences (faster-whisper, GPU-only)."""
+
+    model: str = "large-v3"
+    language: str = ""  # "" means auto-detect
+    translate: bool = False
+    output_format: Literal["txt", "md", "srt", "vtt", "json"] = "txt"
+    keep_audio: bool = False
+
+
 class UserConfig(BaseModel):
     """Root user configuration, persisted locally as YAML."""
 
@@ -86,3 +96,4 @@ class UserConfig(BaseModel):
     cookies: CookiesConfig = Field(default_factory=CookiesConfig)
     paths: PathsConfig = Field(default_factory=PathsConfig)
     gpu: GPUConfig = Field(default_factory=GPUConfig)
+    transcription: TranscriptionConfig = Field(default_factory=TranscriptionConfig)

@@ -253,6 +253,34 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "Batch input is not available.",
         Language.PT_BR: "Entrada em lote não está disponível.",
     },
+    "transcribe.enter_file": {
+        Language.EN_US: "Path to the audio/video file:",
+        Language.PT_BR: "Caminho do arquivo de áudio/vídeo:",
+    },
+    "transcribe.file_missing": {
+        Language.EN_US: "File not found: {path}",
+        Language.PT_BR: "Arquivo não encontrado: {path}",
+    },
+    "transcribe.working": {
+        Language.EN_US: "Transcribing (GPU)...",
+        Language.PT_BR: "Transcrevendo (GPU)...",
+    },
+    "transcribe.gpu_required": {
+        Language.EN_US: "GPU required",
+        Language.PT_BR: "GPU necessária",
+    },
+    "transcribe.saved": {
+        Language.EN_US: "Transcript saved",
+        Language.PT_BR: "Transcrição salva",
+    },
+    "transcribe.summary": {
+        Language.EN_US: "Language: {language} | {segments} segment(s)",
+        Language.PT_BR: "Idioma: {language} | {segments} segmento(s)",
+    },
+    "transcribe.failed": {
+        Language.EN_US: "Transcription failed: {error}",
+        Language.PT_BR: "Falha na transcrição: {error}",
+    },
 }
 
 

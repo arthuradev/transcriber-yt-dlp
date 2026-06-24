@@ -7,7 +7,38 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 11: GPU-only transcription (faster-whisper CUDA workflow).
+- Phase 12: Subtitles/transcripts (download existing subtitles).
+
+## [v0.11.0] - 2026-06-24
+
+### Added
+- GPU-only transcription (faster-whisper; no CPU fallback):
+  - `core.transcription` domain + `core.transcript_format` serializers
+    (txt/md/srt/vtt/json).
+  - `ports.transcription.TranscriptionEnginePort` (`gpu_available` + `transcribe`).
+  - `adapters.faster_whisper_engine.FasterWhisperEngine` — the only module touching
+    faster-whisper/ctranslate2 (lazy, type-suppressed); injectable GPU check and
+    transcribe function; reports no GPU gracefully when CUDA/the dependency is
+    absent.
+  - `application.transcription.TranscriptionService` — enforces GPU-only, aborting
+    with a helpful `TranscriptionError` when no GPU is available.
+  - `storage.transcript_store.save_transcript` — raw transcript output.
+  - `ui.transcribe_flow.TranscribeFlow` — wired to the "Transcribe local file"
+    menu action; transcription progress presenter and i18n keys.
+- `config.models.TranscriptionConfig` (model `large-v3`, auto language, translate,
+  output format, keep-audio) on `UserConfig`.
+- `faster-whisper` as an **optional** extra (`transcriber[transcription]`).
+
+### Tests
+- Added transcript-format, transcription-service (GPU gate), engine (fakes),
+  transcript-store, and transcribe-flow tests; verified the flow end-to-end with
+  a fake GPU engine (save + abort paths).
+
+### Notes
+- faster-whisper is heavy and GPU-only, so it is not installed by default or in
+  CI; real GPU transcription is not exercised by automated tests (injected fakes).
+- Audio is decoded by faster-whisper directly (video files work); no separate
+  ffmpeg extraction step.
 
 ## [v0.10.0] - 2026-06-24
 

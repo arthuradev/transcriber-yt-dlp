@@ -21,6 +21,7 @@ from rich.progress import (
 )
 
 from transcriber.core.download import DownloadProgress
+from transcriber.core.transcription import TranscriptionProgress
 from transcriber.ui.i18n import Translator
 
 
@@ -57,6 +58,44 @@ class ProgressPresenter:
             total=total,
             completed=float(progress.downloaded_bytes),
         )
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        if self._progress is not None:
+            self._progress.stop()
+
+
+class TranscriptionProgressPresenter:
+    """Context manager that shows transcription progress (by media seconds)."""
+
+    def __init__(self, console: Console, translator: Translator) -> None:
+        self._console = console
+        self._t = translator
+        self._progress: Progress | None = None
+        self._task: TaskID | None = None
+
+    def __enter__(self) -> TranscriptionProgressPresenter:
+        if self._console.is_terminal:
+            self._progress = Progress(
+                TextColumn("[accent]{task.description}[/accent]"),
+                BarColumn(),
+                TaskProgressColumn(),
+                console=self._console,
+                transient=True,
+            )
+            self._progress.start()
+            self._task = self._progress.add_task(self._t("transcribe.working"), total=None)
+        return self
+
+    def update(self, progress: TranscriptionProgress) -> None:
+        if self._progress is None or self._task is None:
+            return
+        total = progress.total_seconds if progress.total_seconds > 0 else None
+        self._progress.update(self._task, total=total, completed=progress.processed_seconds)
 
     def __exit__(
         self,
