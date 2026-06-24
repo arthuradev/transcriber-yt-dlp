@@ -7,7 +7,39 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 13: DeepSeek/OpenAI-compatible transcript cleanup.
+- Phase 14: Safety pipeline and cookies.
+
+## [v0.13.0] - 2026-06-24
+
+### Added
+- Optional LLM transcript cleanup (DeepSeek / OpenAI-compatible):
+  - `core.cleanup`: five cleanup profiles (readable, study_notes, article,
+    subtitle_cleanup, verbatim_clean), the fixed format-only `PROMPT_CONTRACT`,
+    `system_prompt`, `chunk_text`, and `LLMError`.
+  - `ports.llm_provider.LLMProviderPort` + `adapters.openai_compatible.
+    OpenAICompatibleProvider` (`POST {base_url}/chat/completions` via stdlib
+    `urllib`; injectable transport; key as Bearer, never logged, redacted from
+    errors; transcript never logged).
+  - `application.cleanup.CleanupService` (chunk → clean → join).
+  - `storage.text_store.save_text` for the cleaned transcript.
+  - `ui.cleanup_flow.CleanupFlow` wired to "Clean transcript with AI": warns what
+    is sent, **always asks before cleanup**, requires the API key, picks a style.
+  - `config.secrets.llm_api_key()` (DEEPSEEK_API_KEY / OPENAI_COMPATIBLE_API_KEY);
+    cleanup i18n keys.
+
+### Changed
+- "Clean transcript with AI" now runs the cleanup flow (was a placeholder).
+
+### Tests
+- Added cleanup-core (profiles/prompt/chunking), provider (request/redaction),
+  service, text-store, and flow tests; verified the chain end-to-end with a fake
+  transport (no secret leakage).
+
+### Notes
+- The LLM may only format (never add facts or change meaning); the prompt
+  enforces this. The transcript text is never logged.
+- No new dependency (stdlib `urllib`). The real network call is
+  isolated/injectable and not network-tested (no key in CI).
 
 ## [v0.12.0] - 2026-06-24
 

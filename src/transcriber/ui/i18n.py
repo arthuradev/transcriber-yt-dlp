@@ -309,6 +309,42 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "{lang} (auto)",
         Language.PT_BR: "{lang} (automática)",
     },
+    "cleanup.enter_file": {
+        Language.EN_US: "Path to the transcript file:",
+        Language.PT_BR: "Caminho do arquivo de transcrição:",
+    },
+    "cleanup.file_missing": {
+        Language.EN_US: "File not found: {path}",
+        Language.PT_BR: "Arquivo não encontrado: {path}",
+    },
+    "cleanup.warning": {
+        Language.EN_US: "Only the transcript text is sent to the provider (not audio/video).",
+        Language.PT_BR: "Apenas o texto da transcrição é enviado ao provedor (não áudio/vídeo).",
+    },
+    "cleanup.confirm": {
+        Language.EN_US: "Send the transcript text for AI cleanup?",
+        Language.PT_BR: "Enviar o texto da transcrição para limpeza por IA?",
+    },
+    "cleanup.no_key": {
+        Language.EN_US: "Set DEEPSEEK_API_KEY or OPENAI_COMPATIBLE_API_KEY in .env first.",
+        Language.PT_BR: "Defina DEEPSEEK_API_KEY ou OPENAI_COMPATIBLE_API_KEY no .env primeiro.",
+    },
+    "cleanup.select_profile": {
+        Language.EN_US: "Select a cleanup style:",
+        Language.PT_BR: "Selecione um estilo de limpeza:",
+    },
+    "cleanup.cancelled": {
+        Language.EN_US: "Cancelled.",
+        Language.PT_BR: "Cancelado.",
+    },
+    "cleanup.saved": {
+        Language.EN_US: "Cleaned transcript saved",
+        Language.PT_BR: "Transcrição limpa salva",
+    },
+    "cleanup.failed": {
+        Language.EN_US: "Cleanup failed: {error}",
+        Language.PT_BR: "Falha na limpeza: {error}",
+    },
 }
 
 

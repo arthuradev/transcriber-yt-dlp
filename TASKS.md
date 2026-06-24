@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 12 — Subtitles/transcripts.
+Phase 13 — DeepSeek/OpenAI-compatible cleanup.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -165,11 +165,23 @@ Phase 12 — Subtitles/transcripts.
 - [x] Update CHANGELOG, TASKS, media-download design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.12.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 13.
+- [x] Ask user permission to proceed to Phase 13.
+
+## Phase 13 checklist
+- [x] Add cleanup profiles + format-only prompt contract + chunking.
+- [x] Add `LLMProviderPort` + `OpenAICompatibleProvider` (key redaction, no logging).
+- [x] Add `CleanupService` (chunk → clean → join).
+- [x] Add cleaned-transcript writer (`save_text`).
+- [x] Add `CleanupFlow` (always ask before cleanup; key required) wired to menu.
+- [x] Read key from `.env`; cleanup i18n keys.
+- [x] Add cleanup/provider/service/store/flow tests; verify end-to-end.
+- [x] Update CHANGELOG, TASKS, llm-cleanup design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.13.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 14.
 
 ## Backlog notes
-- Real yt-dlp subtitle download is injectable/not network-tested (fakes).
-- Auto-chaining no-subtitles to GPU transcription is a future enhancement.
-- LLM transcript cleanup lands in Phase 13.
-- API keys live in `.env`, never in config.yaml.
+- LLM may only format; transcript never logged; key in `.env` only.
+- Real LLM network call is injectable/not network-tested (no key in CI).
+- Full safety pipeline + cookies land in Phase 14.
 - Do not skip ahead.

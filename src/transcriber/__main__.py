@@ -47,15 +47,19 @@ def _build_action_handler(
     """Build the menu-action handler routing download actions to the dry-run flow."""
     from transcriber.adapters.faster_whisper_engine import FasterWhisperEngine
     from transcriber.adapters.local_files import LocalTextFileReader
+    from transcriber.adapters.openai_compatible import OpenAICompatibleProvider
     from transcriber.adapters.yt_dlp_engine import YtDlpEngine
     from transcriber.application.batch import BatchProbeService
+    from transcriber.application.cleanup import CleanupService
     from transcriber.application.executor import DownloadExecutor
     from transcriber.application.planner import DownloadPlanner
     from transcriber.application.probe import MediaProbeService
     from transcriber.application.subtitles import SubtitleService
     from transcriber.application.transcription import TranscriptionService
+    from transcriber.config.secrets import llm_api_key
     from transcriber.storage.archive import FileDownloadArchive, default_archive_path
     from transcriber.ui.ascii_art import choose_art, load_art_dir, locate_ascii_dir
+    from transcriber.ui.cleanup_flow import CleanupFlow, QuestionaryCleanupFlowPrompts
     from transcriber.ui.download_flow import DownloadFlow, QuestionaryDownloadFlowPrompts
     from transcriber.ui.menu import MenuAction
     from transcriber.ui.subtitle_flow import QuestionarySubtitleFlowPrompts, SubtitleFlow
@@ -67,15 +71,21 @@ def _build_action_handler(
     }
     engine = YtDlpEngine()
     archive = FileDownloadArchive(default_archive_path())
+    file_reader = LocalTextFileReader()
     probe_service = MediaProbeService(engine)
     executor = DownloadExecutor(engine, archive=archive)
     planner = DownloadPlanner(archive=archive)
-    batch_service = BatchProbeService(engine, LocalTextFileReader())
+    batch_service = BatchProbeService(engine, file_reader)
     prompts = QuestionaryDownloadFlowPrompts(translator)
     transcription_service = TranscriptionService(FasterWhisperEngine())
     transcribe_prompts = QuestionaryTranscribeFlowPrompts(translator)
     subtitle_service = SubtitleService(engine)
     subtitle_prompts = QuestionarySubtitleFlowPrompts(translator)
+    llm_key = llm_api_key()
+    cleanup_service = CleanupService(
+        OpenAICompatibleProvider(base_url=config.llm.base_url, api_key=llm_key or "")
+    )
+    cleanup_prompts = QuestionaryCleanupFlowPrompts(translator)
     success_dir = locate_ascii_dir("success")
     success_art = choose_art(load_art_dir(success_dir)) if success_dir is not None else None
 
@@ -100,6 +110,19 @@ def _build_action_handler(
                 paths=config.paths,
                 subtitle_format=config.subtitles.format,
                 prompts=subtitle_prompts,
+            ).run()
+            return True
+
+        if action is MenuAction.CLEAN_TRANSCRIPT:
+            CleanupFlow(
+                service=cleanup_service,
+                reader=file_reader,
+                console=console,
+                translator=translator,
+                output_dir=config.paths.download_dir,
+                model=config.llm.model,
+                api_key=llm_key,
+                prompts=cleanup_prompts,
             ).run()
             return True
 
