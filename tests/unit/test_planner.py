@@ -69,3 +69,38 @@ def test_plan_respects_organize_flags() -> None:
     plan = _planner().plan(_media(), DOWNLOAD_PROFILES["audio_mp3"], paths)
     assert plan.items[0].output_path == "d/My Video.mp3"
     assert plan.requires_ffmpeg
+
+
+def test_plan_playlist_uses_group_subfolder() -> None:
+    entries = (PlaylistEntry("v1", "Clip 1", "u1"),)
+    playlist = PlaylistMetadata("PL", "My List", "Youtube", "https://x/PL", 1, entries)
+    plan = _planner().plan(
+        playlist, DOWNLOAD_PROFILES["video_best"], PathsConfig(download_dir="out")
+    )
+    assert plan.items[0].output_path == "out/Youtube/2026-06-24/My List/Clip 1 [v1].mp4"
+
+
+def test_plan_batch_flattens_and_classifies() -> None:
+    m1 = MediaMetadata("a", "A", "Yt", "https://x/a", None, None, ())
+    m2 = MediaMetadata("b", "B", "Yt", "https://x/b", None, None, ())
+    entries = tuple(PlaylistEntry(f"id{i}", f"T{i}", f"u{i}") for i in range(5))
+    playlist = PlaylistMetadata("PL", "L", "Yt", "https://x/PL", 5, entries)
+    plan = _planner().plan_batch([m1, m2, playlist], DOWNLOAD_PROFILES["video_best"], PathsConfig())
+    assert plan.item_count == 7
+    assert plan.is_playlist
+    assert plan.risk is RiskLevel.HIGH
+
+
+def test_plan_marks_duplicates() -> None:
+    class _Archive:
+        def contains(self, key: str) -> bool:
+            return key == "Yt:a"
+
+        def add(self, key: str) -> None:
+            pass
+
+    planner = DownloadPlanner(today=lambda: date(2026, 6, 24), archive=_Archive())
+    media = MediaMetadata("a", "A", "Yt", "https://x/a", None, None, ())
+    plan = planner.plan(media, DOWNLOAD_PROFILES["video_best"], PathsConfig())
+    assert plan.items[0].is_duplicate
+    assert any("already downloaded" in warning for warning in plan.warnings)

@@ -33,13 +33,20 @@ def plan_output_path(
     organize_by_date: bool,
     include_media_id: bool,
     today: date,
+    group: str = "",
 ) -> str:
-    """Compute the planned output path (forward-slash separated) for one item."""
+    """Compute the planned output path (forward-slash separated) for one item.
+
+    ``group`` is an optional subfolder (e.g. a playlist title) inserted after the
+    site/date folders.
+    """
     parts: list[str] = [output_dir.rstrip("/\\") or "."]
     if organize_by_site and extractor:
         parts.append(sanitize_filename(extractor, max_length=40))
     if organize_by_date:
         parts.append(today.isoformat())
+    if group:
+        parts.append(sanitize_filename(group, max_length=60))
 
     stem = sanitize_filename(title or media_id or "untitled")
     if include_media_id and media_id:

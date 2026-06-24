@@ -48,3 +48,19 @@ def test_plan_path_minimal() -> None:
         today=date(2026, 6, 24),
     )
     assert path == "d/T.mp3"
+
+
+def test_plan_path_with_group() -> None:
+    path = plan_output_path(
+        output_dir="out",
+        extractor="Yt",
+        media_id="id",
+        title="T",
+        ext="mp4",
+        organize_by_site=True,
+        organize_by_date=True,
+        include_media_id=True,
+        today=date(2026, 6, 24),
+        group="My List",
+    )
+    assert path == "out/Yt/2026-06-24/My List/T [id].mp4"

@@ -7,7 +7,37 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 10: Playlists, batch URLs, folders, duplicates.
+- Phase 11: GPU-only transcription (faster-whisper CUDA workflow).
+
+## [v0.10.0] - 2026-06-24
+
+### Added
+- Playlist execution: a playlist probe expands into one item per entry,
+  organized into a playlist-title subfolder.
+- Batch `.txt` input: `core.batch.parse_url_list`, a `TextFileReader` port +
+  `adapters.local_files.LocalTextFileReader`, `application.batch.BatchProbeService`
+  (probes each URL, collects per-URL errors), and `DownloadPlanner.plan_batch`
+  (flattens all items; risk classified on total declared count).
+- Folder organization: optional `group` subfolder in `core.paths.plan_output_path`
+  (site / date / group / file).
+- Duplicate avoidance: `DownloadArchive` port + `storage.FileDownloadArchive`
+  (user-local `archive.txt` of `extractor:id` keys). The planner marks
+  duplicates; the executor skips archived items and records successes.
+  `DownloadResult.skipped` + skipped count in the summary.
+- Download flow now asks single-URL vs batch file; source/batch i18n keys
+  (pt-BR / en-US).
+
+### Changed
+- `PlannedItem` carries `extractor` and `is_duplicate`; `DownloadResult` carries
+  `skipped`; the planner/executor accept an optional archive.
+
+### Tests
+- Added batch-parsing/service, archive, planner (batch/group/duplicate),
+  executor (skip/record), paths (group), and batch-flow tests. Verified the
+  batch + archive duplicate-skip pipeline end-to-end across two runs.
+
+### Notes
+- Batch limits respected: more than 5 declared items requires strong confirmation.
 
 ## [v0.9.0] - 2026-06-24
 

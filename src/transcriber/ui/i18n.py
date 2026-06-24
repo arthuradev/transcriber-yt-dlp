@@ -222,8 +222,36 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.PT_BR: "Falha no download",
     },
     "download.summary": {
-        Language.EN_US: "{ok} succeeded, {failed} failed",
-        Language.PT_BR: "{ok} concluído(s), {failed} com falha",
+        Language.EN_US: "{ok} succeeded, {skipped} skipped, {failed} failed",
+        Language.PT_BR: "{ok} concluído(s), {skipped} ignorado(s), {failed} com falha",
+    },
+    "source.prompt": {
+        Language.EN_US: "What do you want to download from?",
+        Language.PT_BR: "De onde você quer baixar?",
+    },
+    "source.single": {
+        Language.EN_US: "A single URL",
+        Language.PT_BR: "Uma única URL",
+    },
+    "source.batch": {
+        Language.EN_US: "A .txt file with URLs",
+        Language.PT_BR: "Um arquivo .txt com URLs",
+    },
+    "source.file": {
+        Language.EN_US: "Path to the .txt file:",
+        Language.PT_BR: "Caminho do arquivo .txt:",
+    },
+    "batch.found": {
+        Language.EN_US: "{count} item(s) found",
+        Language.PT_BR: "{count} item(ns) encontrado(s)",
+    },
+    "batch.none": {
+        Language.EN_US: "No items could be read from the file.",
+        Language.PT_BR: "Nenhum item pôde ser lido do arquivo.",
+    },
+    "batch.unavailable": {
+        Language.EN_US: "Batch input is not available.",
+        Language.PT_BR: "Entrada em lote não está disponível.",
     },
 }
 

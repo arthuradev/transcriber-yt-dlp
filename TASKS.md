@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 9 — Profiles and formats.
+Phase 10 — Playlists, batch URLs, folders, duplicates.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -127,10 +127,23 @@ Phase 9 — Profiles and formats.
 - [x] Update CHANGELOG, TASKS, media-download design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.9.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 10.
+- [x] Ask user permission to proceed to Phase 10.
+
+## Phase 10 checklist
+- [x] Playlist execution with playlist-title subfolder.
+- [x] Batch `.txt` input (parser + reader port/adapter + batch service).
+- [x] `DownloadPlanner.plan_batch` flattening + risk on total count.
+- [x] Folder organization `group` subfolder.
+- [x] Duplicate archive (port + file storage); planner marks, executor skips/records.
+- [x] Flow source selection (single/batch); source/batch i18n keys.
+- [x] Add batch/archive/planner/executor/paths/flow tests; verify end-to-end.
+- [x] Update CHANGELOG, TASKS, media-download design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.10.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 11.
 
 ## Backlog notes
-- Single URL execution; playlist/batch execution is Phase 10.
-- No transcription implementation yet (Phase 11+).
+- Batch limits respected (>5 declared items requires strong confirmation).
+- No transcription implementation yet (Phase 11 adds GPU-only faster-whisper).
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

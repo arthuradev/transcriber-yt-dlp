@@ -45,10 +45,13 @@ def _build_action_handler(
     console: Console, config: UserConfig, translator: Translator
 ) -> Callable[[MenuAction], bool]:
     """Build the menu-action handler routing download actions to the dry-run flow."""
+    from transcriber.adapters.local_files import LocalTextFileReader
     from transcriber.adapters.yt_dlp_engine import YtDlpEngine
+    from transcriber.application.batch import BatchProbeService
     from transcriber.application.executor import DownloadExecutor
     from transcriber.application.planner import DownloadPlanner
     from transcriber.application.probe import MediaProbeService
+    from transcriber.storage.archive import FileDownloadArchive, default_archive_path
     from transcriber.ui.ascii_art import choose_art, load_art_dir, locate_ascii_dir
     from transcriber.ui.download_flow import DownloadFlow, QuestionaryDownloadFlowPrompts
     from transcriber.ui.menu import MenuAction
@@ -59,9 +62,11 @@ def _build_action_handler(
         MenuAction.DOWNLOAD_TRANSCRIPT: "transcript",
     }
     engine = YtDlpEngine()
+    archive = FileDownloadArchive(default_archive_path())
     probe_service = MediaProbeService(engine)
-    executor = DownloadExecutor(engine)
-    planner = DownloadPlanner()
+    executor = DownloadExecutor(engine, archive=archive)
+    planner = DownloadPlanner(archive=archive)
+    batch_service = BatchProbeService(engine, LocalTextFileReader())
     prompts = QuestionaryDownloadFlowPrompts(translator)
     success_dir = locate_ascii_dir("success")
     success_art = choose_art(load_art_dir(success_dir)) if success_dir is not None else None
@@ -78,6 +83,7 @@ def _build_action_handler(
             paths=config.paths,
             prompts=prompts,
             executor=executor,
+            batch_service=batch_service,
             success_art=success_art,
         ).run(category)
         return True

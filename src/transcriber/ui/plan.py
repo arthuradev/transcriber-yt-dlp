@@ -52,6 +52,8 @@ def render_plan(console: Console, plan: DownloadPlan, t: Translator) -> None:
         table.add_column("output")
         for index, item in enumerate(plan.items[:_MAX_ITEMS], start=1):
             label = item.title or item.media_id or "?"
+            if item.is_duplicate:
+                label = f"{label} (skip)"
             table.add_row(str(index), escape(label), escape(item.output_path))
         console.print(table)
         extra = len(plan.items) - _MAX_ITEMS

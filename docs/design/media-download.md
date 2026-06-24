@@ -76,3 +76,19 @@ flow in Phase 7.
   `format_selector` is the exact `format_id` (no merge/post-processing).
 - Manual mode is offered only when formats are available (single media); flat
   playlist probes have no per-entry formats.
+
+## Playlists, batch, folders, duplicates (Phase 10)
+- **Playlists** execute via the planner/executor: a playlist probe expands into
+  one `PlannedItem` per entry, organized into a playlist-title subfolder.
+- **Batch `.txt`**: `core.batch.parse_url_list` parses the file; `TextFileReader`
+  port (`adapters.local_files.LocalTextFileReader`) reads it; `BatchProbeService`
+  probes each URL (collecting per-URL errors); `DownloadPlanner.plan_batch`
+  flattens all items into one plan. Risk is classified on the total declared
+  count (>5 → strong confirmation).
+- **Folder organization**: `core.paths.plan_output_path` adds an optional
+  `group` subfolder (site / date / group / file).
+- **Duplicates/archive**: `DownloadArchive` port + `storage.FileDownloadArchive`
+  (a user-local `archive.txt` of `extractor:id` keys). The planner marks
+  duplicates for the dry-run; the executor skips archived items and records
+  successful downloads. `DownloadResult.skipped` and the summary's skipped count
+  surface this.

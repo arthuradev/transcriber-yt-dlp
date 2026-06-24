@@ -20,7 +20,7 @@ from transcriber.core.download import (
 )
 from transcriber.core.media import MediaFormat, MediaMetadata, ProbeResult
 from transcriber.core.profiles import DownloadProfile
-from transcriber.ui.download_flow import DownloadFlow
+from transcriber.ui.download_flow import DownloadFlow, DownloadSource
 from transcriber.ui.i18n import Translator
 
 
@@ -48,8 +48,8 @@ class _ScriptedPrompts:
         self._output_dir = output_dir
         self._confirm = confirm
 
-    def ask_url(self) -> str:
-        return self._url
+    def ask_source(self) -> DownloadSource | None:
+        return DownloadSource(is_batch=False, value=self._url)
 
     def select_profile(self, profiles: Sequence[DownloadProfile]) -> DownloadProfile | None:
         return next((p for p in profiles if p.profile_id == self._profile_id), None)

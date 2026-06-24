@@ -18,6 +18,8 @@ class PlannedItem:
     media_id: str
     url: str
     output_path: str
+    extractor: str = ""
+    is_duplicate: bool = False
 
 
 @dataclass(frozen=True)

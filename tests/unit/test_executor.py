@@ -56,6 +56,19 @@ class _Engine:
         return self._result_for(request)
 
 
+class _Archive:
+    def __init__(self, existing: set[str] | None = None) -> None:
+        self._keys: set[str] = set(existing) if existing else set()
+        self.added: list[str] = []
+
+    def contains(self, key: str) -> bool:
+        return key in self._keys
+
+    def add(self, key: str) -> None:
+        self._keys.add(key)
+        self.added.append(key)
+
+
 def test_executor_success() -> None:
     item = PlannedItem("T", "id", "https://x", "out/T.mp4")
     engine = _Engine(lambda r: DownloadResult(True, r.output_path, None))
@@ -92,3 +105,23 @@ def test_executor_passes_audio_options() -> None:
     DownloadExecutor(engine).execute(plan, on_progress=lambda p: None)
     assert engine.requests[0].extract_audio is True
     assert engine.requests[0].audio_format == "mp3"
+
+
+def test_executor_skips_archived_items() -> None:
+    item = PlannedItem("T", "id", "https://x", "out/T.mp4", extractor="Yt")
+    engine = _Engine(lambda r: DownloadResult(True, r.output_path, None))
+    archive = _Archive({"Yt:id"})
+    outcome = DownloadExecutor(engine, archive=archive).execute(
+        _plan((item,)), on_progress=lambda p: None
+    )
+    assert outcome.skipped == 1
+    assert outcome.succeeded == 0
+    assert engine.requests == []
+
+
+def test_executor_records_success_in_archive() -> None:
+    item = PlannedItem("T", "id", "https://x", "out/T.mp4", extractor="Yt")
+    engine = _Engine(lambda r: DownloadResult(True, r.output_path, None))
+    archive = _Archive()
+    DownloadExecutor(engine, archive=archive).execute(_plan((item,)), on_progress=lambda p: None)
+    assert "Yt:id" in archive.added

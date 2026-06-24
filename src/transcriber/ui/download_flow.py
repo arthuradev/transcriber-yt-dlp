@@ -1,7 +1,8 @@
-"""Interactive download planning flow (URL -> probe -> profile -> dry-run).
+"""Interactive download flow (source -> probe -> profile -> dry-run -> execute).
 
-A UI controller that sequences application services (probe, planner) and
-rendering. It performs no download: it stops at the dry-run and confirmation.
+A UI controller that sequences application services (probe, batch, planner,
+executor) and rendering. Supports a single URL or a ``.txt`` batch file, builds a
+dry-run plan, confirms, then executes (for downloadable profiles) with progress.
 Prompts are injected via a small protocol so the flow can be driven in tests
 without a terminal.
 """
@@ -9,17 +10,20 @@ without a terminal.
 from __future__ import annotations
 
 from collections.abc import Sequence
+from dataclasses import dataclass
 from typing import Protocol
 
 import questionary
 from rich.console import Console
 from rich.markup import escape
 
+from transcriber.application.batch import BatchProbeService
 from transcriber.application.executor import DownloadExecutor
 from transcriber.application.planner import DownloadPlanner
 from transcriber.application.probe import MediaProbeService
 from transcriber.config.models import PathsConfig
 from transcriber.core.media import MediaError, MediaFormat, MediaMetadata, ProbeResult
+from transcriber.core.plan import DownloadPlan
 from transcriber.core.profiles import (
     MANUAL_PROFILE_ID,
     DownloadProfile,
@@ -47,17 +51,24 @@ MANUAL_PROFILE = DownloadProfile(
 )
 
 
+@dataclass(frozen=True)
+class DownloadSource:
+    """Where to download from: a single URL or a batch ``.txt`` file path."""
+
+    is_batch: bool
+    value: str
+
+
 def _format_label(fmt: MediaFormat) -> str:
     resolution = f"{fmt.height}p" if fmt.height else (fmt.note or "")
-    size = format_size(fmt.filesize)
-    parts = [fmt.format_id, fmt.ext, resolution, size]
+    parts = [fmt.format_id, fmt.ext, resolution, format_size(fmt.filesize)]
     return " | ".join(part for part in parts if part)
 
 
 class DownloadFlowPrompts(Protocol):
     """Prompts the download flow needs."""
 
-    def ask_url(self) -> str: ...
+    def ask_source(self) -> DownloadSource | None: ...
     def select_profile(self, profiles: Sequence[DownloadProfile]) -> DownloadProfile | None: ...
     def select_format(self, formats: Sequence[MediaFormat]) -> MediaFormat | None: ...
     def ask_output_dir(self, default: str) -> str: ...
@@ -70,9 +81,19 @@ class QuestionaryDownloadFlowPrompts:
     def __init__(self, translator: Translator) -> None:
         self._t = translator
 
-    def ask_url(self) -> str:
-        answer: str | None = questionary.text(self._t("plan.enter_url")).ask()
-        return answer or ""
+    def ask_source(self) -> DownloadSource | None:
+        choices = [
+            questionary.Choice(title=self._t("source.single"), value="single"),
+            questionary.Choice(title=self._t("source.batch"), value="batch"),
+        ]
+        kind: str | None = questionary.select(self._t("source.prompt"), choices=choices).ask()
+        if kind is None:
+            return None
+        if kind == "batch":
+            path: str | None = questionary.text(self._t("source.file")).ask()
+            return DownloadSource(is_batch=True, value=path or "")
+        url: str | None = questionary.text(self._t("plan.enter_url")).ask()
+        return DownloadSource(is_batch=False, value=url or "")
 
     def select_profile(self, profiles: Sequence[DownloadProfile]) -> DownloadProfile | None:
         choices = [
@@ -109,7 +130,7 @@ class QuestionaryDownloadFlowPrompts:
 
 
 class DownloadFlow:
-    """Drives the URL -> probe -> profile -> dry-run sequence."""
+    """Drives the source -> probe -> profile -> dry-run -> execute sequence."""
 
     def __init__(
         self,
@@ -121,6 +142,7 @@ class DownloadFlow:
         paths: PathsConfig,
         prompts: DownloadFlowPrompts,
         executor: DownloadExecutor | None = None,
+        batch_service: BatchProbeService | None = None,
         success_art: AsciiArt | None = None,
     ) -> None:
         self._probe_service = probe_service
@@ -130,6 +152,7 @@ class DownloadFlow:
         self._paths = paths
         self._prompts = prompts
         self._executor = executor
+        self._batch_service = batch_service
         self._success_art = success_art
 
     def run(self, category: str) -> None:
@@ -137,29 +160,60 @@ class DownloadFlow:
         self._pause()
 
     def _run(self, category: str) -> None:
-        url = self._prompts.ask_url().strip()
-        if not url:
+        source = self._prompts.ask_source()
+        if source is None or not source.value.strip():
             return
 
+        if source.is_batch:
+            plan = self._plan_from_batch(category, source.value.strip())
+        else:
+            plan = self._plan_from_url(category, source.value.strip())
+        if plan is None:
+            return
+
+        self._execute_plan(plan)
+
+    def _plan_from_url(self, category: str, url: str) -> DownloadPlan | None:
         try:
             result = self._probe_service.probe(url)
         except MediaError as exc:
             self._console.print(
                 f"[error]{self._t('plan.probe_failed', error=escape(exc.message))}[/error]"
             )
-            return
+            return None
 
         render_metadata(self._console, result, self._t)
-
         profile = self._choose_profile(category, result)
         if profile is None:
-            return
+            return None
+        return self._build_plan([result], profile)
 
+    def _plan_from_batch(self, category: str, path: str) -> DownloadPlan | None:
+        if self._batch_service is None:
+            self._console.print(f"[error]{self._t('batch.unavailable')}[/error]")
+            return None
+
+        batch = self._batch_service.probe_file(path)
+        for error in batch.errors:
+            self._console.print(f"[warning]- {escape(error)}[/warning]")
+        if not batch.results:
+            self._console.print(f"[error]{self._t('batch.none')}[/error]")
+            return None
+
+        self._console.print(f"[info]{self._t('batch.found', count=len(batch.results))}[/info]")
+        profile = self._choose_named_profile(category)
+        if profile is None:
+            return None
+        return self._build_plan(batch.results, profile)
+
+    def _build_plan(self, probes: Sequence[ProbeResult], profile: DownloadProfile) -> DownloadPlan:
         output_dir = self._prompts.ask_output_dir(self._paths.download_dir)
-        effective_paths = self._paths.model_copy(update={"download_dir": output_dir})
-        plan = self._planner.plan(result, profile, effective_paths)
+        paths = self._paths.model_copy(update={"download_dir": output_dir})
+        plan = self._planner.plan_batch(probes, profile, paths)
         render_plan(self._console, plan, self._t)
+        return plan
 
+    def _execute_plan(self, plan: DownloadPlan) -> None:
         if (
             plan.requires_confirmation
             and plan.has_items
@@ -183,6 +237,12 @@ class DownloadFlow:
             and fits(self._success_art, self._console.width, min_width=_SUCCESS_ART_MIN_WIDTH)
         ):
             render_art(self._console, self._success_art)
+
+    def _choose_named_profile(self, category: str) -> DownloadProfile | None:
+        profiles = profiles_for_category(category)
+        if not profiles:
+            return None
+        return self._prompts.select_profile(profiles)
 
     def _choose_profile(self, category: str, result: ProbeResult) -> DownloadProfile | None:
         profiles = list(profiles_for_category(category))

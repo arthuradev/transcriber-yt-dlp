@@ -19,7 +19,9 @@ def render_download_summary(console: Console, outcome: DownloadOutcome, t: Trans
     else:
         title, style = t("download.failed_title"), "error"
 
-    lines = [t("download.summary", ok=outcome.succeeded, failed=outcome.failed)]
+    lines = [
+        t("download.summary", ok=outcome.succeeded, skipped=outcome.skipped, failed=outcome.failed)
+    ]
     for path in outcome.output_paths:
         lines.append(escape(path))
     for result in outcome.results:

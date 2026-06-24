@@ -62,6 +62,7 @@ class DownloadResult:
     ok: bool
     output_path: str | None
     error: str | None
+    skipped: bool = False
 
 
 @dataclass(frozen=True)
@@ -76,7 +77,11 @@ class DownloadOutcome:
 
     @property
     def succeeded(self) -> int:
-        return sum(1 for result in self.results if result.ok)
+        return sum(1 for result in self.results if result.ok and not result.skipped)
+
+    @property
+    def skipped(self) -> int:
+        return sum(1 for result in self.results if result.skipped)
 
     @property
     def failed(self) -> int:
@@ -84,7 +89,9 @@ class DownloadOutcome:
 
     @property
     def output_paths(self) -> tuple[str, ...]:
-        return tuple(r.output_path for r in self.results if r.ok and r.output_path)
+        return tuple(
+            r.output_path for r in self.results if r.ok and not r.skipped and r.output_path
+        )
 
 
 class DownloadError(AppError):
