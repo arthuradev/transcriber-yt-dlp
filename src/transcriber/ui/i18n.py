@@ -281,6 +281,34 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "Transcription failed: {error}",
         Language.PT_BR: "Falha na transcrição: {error}",
     },
+    "media.subtitles": {
+        Language.EN_US: "Subtitles",
+        Language.PT_BR: "Legendas",
+    },
+    "subtitle.select_language": {
+        Language.EN_US: "Select a subtitle language:",
+        Language.PT_BR: "Selecione um idioma de legenda:",
+    },
+    "subtitle.none": {
+        Language.EN_US: "No subtitles found. Use 'Transcribe local file' instead.",
+        Language.PT_BR: "Nenhuma legenda encontrada. Use 'Transcrever arquivo local'.",
+    },
+    "subtitle.playlist_unsupported": {
+        Language.EN_US: "Subtitle download supports a single video URL.",
+        Language.PT_BR: "O download de legendas suporta uma única URL de vídeo.",
+    },
+    "subtitle.saved": {
+        Language.EN_US: "Subtitles saved",
+        Language.PT_BR: "Legendas salvas",
+    },
+    "subtitle.failed": {
+        Language.EN_US: "Subtitle download failed: {error}",
+        Language.PT_BR: "Falha no download de legendas: {error}",
+    },
+    "subtitle.auto_suffix": {
+        Language.EN_US: "{lang} (auto)",
+        Language.PT_BR: "{lang} (automática)",
+    },
 }
 
 

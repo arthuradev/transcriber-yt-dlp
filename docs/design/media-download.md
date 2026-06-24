@@ -26,6 +26,20 @@ input
 → history/report
 ```
 
+## Subtitles / transcripts (Phase 12)
+The "Download transcript / subtitles" action prefers existing subtitles before
+local transcription:
+- The probe now reports available subtitle and auto-caption languages
+  (`MediaMetadata.subtitle_languages` / `auto_caption_languages`), shown in the
+  metadata panel.
+- `ports.subtitle_engine.SubtitleEnginePort.download_subtitles` +
+  `YtDlpEngine.download_subtitles` (yt-dlp `writesubtitles`/`writeautomaticsub`,
+  `skip_download`) download the chosen track. `application.subtitles.SubtitleService`
+  validates input; `ui.subtitle_flow.SubtitleFlow` drives probe -> pick language
+  -> download.
+- When no subtitles exist, the flow points the user to "Transcribe local file"
+  (GPU-only). Auto-chaining to transcription is intentionally left for later.
+
 ## Cookies
 Cookies are advanced and protected. Browser cookies may be used only with explicit confirmation.
 

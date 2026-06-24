@@ -16,6 +16,7 @@ def test_defaults_are_safe() -> None:
     assert config.weather.query == ""
     assert config.paths.overwrite_policy == "ask"
     assert config.gpu.acknowledged_gpu_only is False
+    assert config.subtitles.format == "srt"
 
 
 def test_transcription_defaults() -> None:

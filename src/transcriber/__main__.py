@@ -52,17 +52,18 @@ def _build_action_handler(
     from transcriber.application.executor import DownloadExecutor
     from transcriber.application.planner import DownloadPlanner
     from transcriber.application.probe import MediaProbeService
+    from transcriber.application.subtitles import SubtitleService
     from transcriber.application.transcription import TranscriptionService
     from transcriber.storage.archive import FileDownloadArchive, default_archive_path
     from transcriber.ui.ascii_art import choose_art, load_art_dir, locate_ascii_dir
     from transcriber.ui.download_flow import DownloadFlow, QuestionaryDownloadFlowPrompts
     from transcriber.ui.menu import MenuAction
+    from transcriber.ui.subtitle_flow import QuestionarySubtitleFlowPrompts, SubtitleFlow
     from transcriber.ui.transcribe_flow import QuestionaryTranscribeFlowPrompts, TranscribeFlow
 
     categories: dict[MenuAction, str] = {
         MenuAction.DOWNLOAD_VIDEO: "video",
         MenuAction.DOWNLOAD_AUDIO: "audio",
-        MenuAction.DOWNLOAD_TRANSCRIPT: "transcript",
     }
     engine = YtDlpEngine()
     archive = FileDownloadArchive(default_archive_path())
@@ -73,6 +74,8 @@ def _build_action_handler(
     prompts = QuestionaryDownloadFlowPrompts(translator)
     transcription_service = TranscriptionService(FasterWhisperEngine())
     transcribe_prompts = QuestionaryTranscribeFlowPrompts(translator)
+    subtitle_service = SubtitleService(engine)
+    subtitle_prompts = QuestionarySubtitleFlowPrompts(translator)
     success_dir = locate_ascii_dir("success")
     success_art = choose_art(load_art_dir(success_dir)) if success_dir is not None else None
 
@@ -85,6 +88,18 @@ def _build_action_handler(
                 config=config.transcription,
                 output_dir=config.paths.download_dir,
                 prompts=transcribe_prompts,
+            ).run()
+            return True
+
+        if action is MenuAction.DOWNLOAD_TRANSCRIPT:
+            SubtitleFlow(
+                probe_service=probe_service,
+                subtitle_service=subtitle_service,
+                console=console,
+                translator=translator,
+                paths=config.paths,
+                subtitle_format=config.subtitles.format,
+                prompts=subtitle_prompts,
             ).run()
             return True
 

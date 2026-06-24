@@ -62,6 +62,13 @@ def _map_format(fmt: dict[str, Any]) -> MediaFormat:
     )
 
 
+def _lang_keys(value: Any) -> tuple[str, ...]:
+    if not isinstance(value, dict):
+        return ()
+    keys = cast("dict[str, object]", value).keys()
+    return tuple(sorted(str(key) for key in keys))
+
+
 def _map_media(info: dict[str, Any]) -> MediaMetadata:
     media_id = _str(info.get("id"))
     title = _str(info.get("title"))
@@ -76,6 +83,8 @@ def _map_media(info: dict[str, Any]) -> MediaMetadata:
         duration_seconds=_opt_float(info.get("duration")),
         uploader=_opt_str(info.get("uploader")),
         formats=tuple(_map_format(fmt) for fmt in raw_formats if fmt),
+        subtitle_languages=_lang_keys(info.get("subtitles")),
+        auto_caption_languages=_lang_keys(info.get("automatic_captions")),
     )
 
 

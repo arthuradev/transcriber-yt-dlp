@@ -7,7 +7,37 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 12: Subtitles/transcripts (download existing subtitles).
+- Phase 13: DeepSeek/OpenAI-compatible transcript cleanup.
+
+## [v0.12.0] - 2026-06-24
+
+### Added
+- Subtitle/transcript download (prefer existing subtitles before local
+  transcription):
+  - Probe reports available subtitle and auto-caption languages
+    (`MediaMetadata.subtitle_languages` / `auto_caption_languages`), shown in the
+    metadata panel.
+  - `core.subtitles` domain + `ports.subtitle_engine.SubtitleEnginePort` +
+    `YtDlpEngine.download_subtitles` (yt-dlp `writesubtitles`/`writeautomaticsub`,
+    `skip_download`).
+  - `application.subtitles.SubtitleService` and
+    `ui.subtitle_flow.SubtitleFlow` (probe -> pick language -> download), wired to
+    the "Download transcript / subtitles" menu action.
+  - `config.models.SubtitlesConfig` (format) on `UserConfig`; subtitle i18n keys.
+- When no subtitles exist, the flow points to "Transcribe local file".
+
+### Changed
+- `MediaMetadata` carries subtitle/auto-caption languages; the
+  "Download transcript / subtitles" action now downloads subtitles (was a
+  non-executing planning path).
+
+### Tests
+- Added subtitle-service, subtitle-flow, mapping (subtitle languages), engine
+  (subtitle download), and media-render tests; verified the flow end-to-end.
+
+### Notes
+- The real yt-dlp subtitle download is isolated/injectable and not network-tested
+  (fakes); probe-of-real-yt-dlp was validated earlier.
 
 ## [v0.11.0] - 2026-06-24
 

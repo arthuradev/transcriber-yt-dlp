@@ -54,6 +54,9 @@ def _render_media(console: Console, media: MediaMetadata, t: Translator) -> None
     table.add_row(t("media.duration"), format_duration(media.duration_seconds))
     if media.uploader:
         table.add_row(t("media.uploader"), media.uploader)
+    subtitle_langs = media.subtitle_languages or media.auto_caption_languages
+    if subtitle_langs:
+        table.add_row(t("media.subtitles"), ", ".join(subtitle_langs))
     table.add_row(t("media.url"), media.webpage_url or "?")
     console.print(Panel(table, title=t("media.metadata_title"), border_style="accent"))
     if media.formats:

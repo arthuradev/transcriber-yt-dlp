@@ -35,6 +35,8 @@ class MediaMetadata:
     duration_seconds: float | None
     uploader: str | None
     formats: tuple[MediaFormat, ...]
+    subtitle_languages: tuple[str, ...] = ()
+    auto_caption_languages: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

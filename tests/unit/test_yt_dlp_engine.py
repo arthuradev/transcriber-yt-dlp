@@ -8,6 +8,7 @@ import pytest
 
 from transcriber.adapters.yt_dlp_engine import YtDlpEngine
 from transcriber.core.media import MediaError, MediaMetadata
+from transcriber.core.subtitles import SubtitleRequest, SubtitleResult
 
 
 def test_engine_maps_injected_info() -> None:
@@ -36,3 +37,16 @@ def test_engine_propagates_extract_error() -> None:
 
     with pytest.raises(MediaError):
         YtDlpEngine(extract=boom).probe("https://x")
+
+
+def test_engine_download_subtitles_uses_injected_fn() -> None:
+    captured: dict[str, SubtitleRequest] = {}
+
+    def fake(request: SubtitleRequest) -> SubtitleResult:
+        captured["request"] = request
+        return SubtitleResult(True, ("out/s.en.srt",), None)
+
+    engine = YtDlpEngine(subtitle_fn=fake)
+    result = engine.download_subtitles(SubtitleRequest("https://x", ("en",), "srt", "out/s"))
+    assert result.ok
+    assert captured["request"].languages == ("en",)

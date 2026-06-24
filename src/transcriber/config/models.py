@@ -85,6 +85,12 @@ class TranscriptionConfig(BaseModel):
     keep_audio: bool = False
 
 
+class SubtitlesConfig(BaseModel):
+    """Subtitle download preferences."""
+
+    format: Literal["srt", "vtt"] = "srt"
+
+
 class UserConfig(BaseModel):
     """Root user configuration, persisted locally as YAML."""
 
@@ -97,3 +103,4 @@ class UserConfig(BaseModel):
     paths: PathsConfig = Field(default_factory=PathsConfig)
     gpu: GPUConfig = Field(default_factory=GPUConfig)
     transcription: TranscriptionConfig = Field(default_factory=TranscriptionConfig)
+    subtitles: SubtitlesConfig = Field(default_factory=SubtitlesConfig)

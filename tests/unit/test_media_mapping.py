@@ -16,6 +16,8 @@ _VIDEO: dict[str, Any] = {
     "webpage_url": "https://youtu.be/abc123",
     "duration": 215.0,
     "uploader": "Chan",
+    "subtitles": {"en": [{"ext": "vtt"}], "es": [{"ext": "vtt"}]},
+    "automatic_captions": {"fr": [{"ext": "vtt"}]},
     "formats": [
         {
             "format_id": "137",
@@ -60,6 +62,8 @@ def test_map_single_video() -> None:
     assert result.duration_seconds == 215.0
     assert result.uploader == "Chan"
     assert len(result.formats) == 2
+    assert result.subtitle_languages == ("en", "es")
+    assert result.auto_caption_languages == ("fr",)
 
 
 def test_map_format_fields() -> None:

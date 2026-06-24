@@ -46,6 +46,17 @@ def test_render_media(console_buffer: tuple[Console, io.StringIO]) -> None:
     assert "137" in output
 
 
+def test_render_media_shows_subtitles(console_buffer: tuple[Console, io.StringIO]) -> None:
+    console, buffer = console_buffer
+    media = MediaMetadata(
+        "abc", "My Video", "Youtube", "https://x/abc", 100.0, None, (), ("en", "es"), ()
+    )
+    render_metadata(console, media, Translator(Language.EN_US))
+    output = buffer.getvalue()
+    assert "Subtitles" in output
+    assert "en, es" in output
+
+
 def test_render_playlist(console_buffer: tuple[Console, io.StringIO]) -> None:
     console, buffer = console_buffer
     playlist = PlaylistMetadata(

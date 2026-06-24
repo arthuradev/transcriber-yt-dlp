@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 11 — GPU-only transcription.
+Phase 12 — Subtitles/transcripts.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -153,11 +153,23 @@ Phase 11 — GPU-only transcription.
 - [x] Update CHANGELOG, TASKS, transcription design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.11.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 12.
+- [x] Ask user permission to proceed to Phase 12.
+
+## Phase 12 checklist
+- [x] Probe reports subtitle/auto-caption languages; shown in metadata.
+- [x] Add `core.subtitles` + `SubtitleEnginePort` + `YtDlpEngine.download_subtitles`.
+- [x] Add `SubtitleService` + `SubtitleFlow` (prefer existing subtitles).
+- [x] Wire "Download transcript / subtitles" to the subtitle flow.
+- [x] Add `SubtitlesConfig`; subtitle i18n keys; no-subs fallback hint.
+- [x] Add subtitle/mapping/engine/flow/media tests; verify flow end-to-end.
+- [x] Update CHANGELOG, TASKS, media-download design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.12.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 13.
 
 ## Backlog notes
-- faster-whisper is optional/heavy/GPU-only; not in CI. Real GPU transcription
-  is unverified by automated tests (injected fakes).
-- Subtitle/transcript download lands in Phase 12.
+- Real yt-dlp subtitle download is injectable/not network-tested (fakes).
+- Auto-chaining no-subtitles to GPU transcription is a future enhancement.
+- LLM transcript cleanup lands in Phase 13.
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

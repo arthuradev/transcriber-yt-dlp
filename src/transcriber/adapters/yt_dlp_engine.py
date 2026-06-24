@@ -29,9 +29,11 @@ from transcriber.core.download import (
     ProgressCallback,
 )
 from transcriber.core.media import MediaError, ProbeResult
+from transcriber.core.subtitles import SubtitleRequest, SubtitleResult
 
 InfoExtractor = Callable[[str], dict[str, Any]]
 Downloader = Callable[[DownloadRequest, ProgressCallback], DownloadResult]
+SubtitleDownloader = Callable[[SubtitleRequest], SubtitleResult]
 
 _PROBE_OPTIONS: dict[str, Any] = {
     "quiet": True,
@@ -100,17 +102,54 @@ def _default_download(request: DownloadRequest, on_progress: ProgressCallback) -
         return DownloadResult(ok=False, output_path=None, error=str(exc))
 
 
+def _subtitle_files(info: Any) -> list[str]:
+    files: list[str] = []
+    requested = info.get("requested_subtitles") if info is not None else None
+    if isinstance(requested, dict):
+        for track in requested.values():
+            filepath = track.get("filepath") if isinstance(track, dict) else None
+            if filepath:
+                files.append(str(filepath))
+    return files
+
+
+def _default_download_subtitles(request: SubtitleRequest) -> SubtitleResult:
+    options: dict[str, Any] = {
+        "quiet": True,
+        "no_warnings": True,
+        "skip_download": True,
+        "writesubtitles": True,
+        "writeautomaticsub": True,
+        "subtitleslangs": list(request.languages),
+        "subtitlesformat": request.fmt,
+        "outtmpl": f"{request.output_base}.%(ext)s",
+    }
+    try:
+        with YoutubeDL(options) as ydl:
+            info = ydl.extract_info(request.url, download=True)
+            files = _subtitle_files(info)
+        if not files:
+            return SubtitleResult(ok=False, files=(), error="No subtitles were downloaded")
+        return SubtitleResult(ok=True, files=tuple(files), error=None)
+    except Exception as exc:
+        return SubtitleResult(ok=False, files=(), error=str(exc))
+
+
 class YtDlpEngine:
-    """Probes and downloads media via yt-dlp."""
+    """Probes and downloads media (and subtitles) via yt-dlp."""
 
     def __init__(
         self,
         *,
         extract: InfoExtractor | None = None,
         download_fn: Downloader | None = None,
+        subtitle_fn: SubtitleDownloader | None = None,
     ) -> None:
         self._extract = extract if extract is not None else _default_extract
         self._download = download_fn if download_fn is not None else _default_download
+        self._download_subtitles = (
+            subtitle_fn if subtitle_fn is not None else _default_download_subtitles
+        )
 
     def probe(self, url: str) -> ProbeResult:
         if not url.strip():
@@ -119,3 +158,6 @@ class YtDlpEngine:
 
     def download(self, request: DownloadRequest, on_progress: ProgressCallback) -> DownloadResult:
         return self._download(request, on_progress)
+
+    def download_subtitles(self, request: SubtitleRequest) -> SubtitleResult:
+        return self._download_subtitles(request)
