@@ -190,6 +190,14 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "Select a profile:",
         Language.PT_BR: "Selecione um perfil:",
     },
+    "plan.manual_format": {
+        Language.EN_US: "Manual format...",
+        Language.PT_BR: "Formato manual...",
+    },
+    "plan.select_format": {
+        Language.EN_US: "Select a format:",
+        Language.PT_BR: "Selecione um formato:",
+    },
     "plan.probe_failed": {
         Language.EN_US: "Could not read metadata: {error}",
         Language.PT_BR: "Não foi possível ler os metadados: {error}",

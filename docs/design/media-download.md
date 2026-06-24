@@ -66,3 +66,13 @@ flow in Phase 7.
 - The `DownloadFlow` now executes after confirmation (for downloadable
   video/audio profiles), shows progress, renders the summary, and shows success
   art. Transcript/metadata profiles remain non-executing for now.
+
+## Profiles & manual format mode (Phase 9)
+- All eight named profiles are implemented (`core.profiles`).
+- Advanced manual mode: the probe's reported formats are shown
+  (`render_metadata`), and for a single media item the profile list includes a
+  "Manual format..." entry. Choosing it prompts a format picker; the selected
+  format becomes a one-off profile via `core.profiles.manual_profile` whose
+  `format_selector` is the exact `format_id` (no merge/post-processing).
+- Manual mode is offered only when formats are available (single media); flat
+  playlist probes have no per-entry formats.

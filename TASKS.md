@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 8 — Download executor + progress.
+Phase 9 — Profiles and formats.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -115,11 +115,22 @@ Phase 8 — Download executor + progress.
 - [x] Update CHANGELOG, TASKS, media-download design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.8.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 9.
+- [x] Ask user permission to proceed to Phase 9.
+
+## Phase 9 checklist
+- [x] Confirm all eight named profiles are implemented.
+- [x] Add `manual_profile` (one-off profile from a chosen format).
+- [x] Offer "Manual format..." in the flow (single media with formats).
+- [x] Add `select_format` prompt + manual-format i18n keys.
+- [x] Ensure probed formats are shown and selectable.
+- [x] Add manual-profile and manual-flow tests.
+- [x] Update CHANGELOG, TASKS, media-download design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.9.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 10.
 
 ## Backlog notes
 - Single URL execution; playlist/batch execution is Phase 10.
-- Quality/profile selection refinements are Phase 9.
 - No transcription implementation yet (Phase 11+).
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

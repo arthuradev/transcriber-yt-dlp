@@ -8,6 +8,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from transcriber.core.media import MediaFormat
+
+MANUAL_PROFILE_ID = "__manual__"
+
 
 @dataclass(frozen=True)
 class DownloadProfile:
@@ -58,3 +62,23 @@ def profiles_for_category(category: str) -> tuple[DownloadProfile, ...]:
     """Return the profiles offered for a menu ``category`` (video/audio/transcript)."""
     kinds = _CATEGORY_KINDS.get(category, ())
     return tuple(profile for profile in _PROFILES if profile.kind in kinds)
+
+
+def manual_profile(fmt: MediaFormat) -> DownloadProfile:
+    """Build a one-off profile that downloads exactly the chosen format.
+
+    Advanced manual mode: no merging or post-processing, so whatever the user
+    picks (video-only, audio-only, or progressive) is what gets downloaded.
+    """
+    has_video = bool(fmt.vcodec) and fmt.vcodec != "none"
+    kind = "video" if has_video else "audio"
+    default_ext = fmt.ext or ("mp4" if has_video else "m4a")
+    return DownloadProfile(
+        profile_id=f"manual:{fmt.format_id}",
+        kind=kind,
+        format_selector=fmt.format_id,
+        default_ext=default_ext,
+        extract_audio=False,
+        audio_format=None,
+        requires_ffmpeg=False,
+    )

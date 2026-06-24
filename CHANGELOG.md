@@ -7,7 +7,26 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 9: Profiles and formats (quality/profile selection).
+- Phase 10: Playlists, batch URLs, folders, duplicates.
+
+## [v0.9.0] - 2026-06-24
+
+### Added
+- Advanced manual format mode: `core.profiles.manual_profile` builds a one-off
+  profile from a chosen `MediaFormat` (its `format_id` becomes the selector, no
+  merge/post-processing).
+- The download flow offers a "Manual format..." entry (single media with
+  available formats); choosing it prompts a format picker. New
+  `DownloadFlowPrompts.select_format` and manual-format i18n keys (pt-BR/en-US).
+
+### Tests
+- Added `manual_profile` tests and a flow test for manual format selection.
+
+### Notes
+- All eight named profiles were already implemented (Phase 7); this phase adds
+  manual selection and ensures probed formats are shown and selectable.
+- Manual mode applies to single media only (flat playlist probes have no
+  per-entry formats).
 
 ## [v0.8.0] - 2026-06-24
 

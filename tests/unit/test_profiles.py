@@ -2,7 +2,32 @@
 
 from __future__ import annotations
 
-from transcriber.core.profiles import DOWNLOAD_PROFILES, get_profile, profiles_for_category
+from transcriber.core.media import MediaFormat
+from transcriber.core.profiles import (
+    DOWNLOAD_PROFILES,
+    get_profile,
+    manual_profile,
+    profiles_for_category,
+)
+
+
+def _fmt(*, vcodec: str | None, acodec: str | None, ext: str = "mp4") -> MediaFormat:
+    return MediaFormat("137", ext, 1080, 1000, vcodec, acodec, "note")
+
+
+def test_manual_profile_video() -> None:
+    profile = manual_profile(_fmt(vcodec="avc1", acodec="none"))
+    assert profile.kind == "video"
+    assert profile.format_selector == "137"
+    assert profile.default_ext == "mp4"
+    assert profile.profile_id == "manual:137"
+
+
+def test_manual_profile_audio() -> None:
+    profile = manual_profile(_fmt(vcodec="none", acodec="mp4a", ext="m4a"))
+    assert profile.kind == "audio"
+    assert profile.format_selector == "137"
+    assert profile.default_ext == "m4a"
 
 
 def test_all_profiles_present() -> None:

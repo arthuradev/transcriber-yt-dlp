@@ -18,7 +18,7 @@ from transcriber.core.download import (
     DownloadResult,
     DownloadStatus,
 )
-from transcriber.core.media import MediaMetadata, ProbeResult
+from transcriber.core.media import MediaFormat, MediaMetadata, ProbeResult
 from transcriber.core.profiles import DownloadProfile
 from transcriber.ui.download_flow import DownloadFlow
 from transcriber.ui.i18n import Translator
@@ -53,6 +53,9 @@ class _ScriptedPrompts:
 
     def select_profile(self, profiles: Sequence[DownloadProfile]) -> DownloadProfile | None:
         return next((p for p in profiles if p.profile_id == self._profile_id), None)
+
+    def select_format(self, formats: Sequence[MediaFormat]) -> MediaFormat | None:
+        return None
 
     def ask_output_dir(self, default: str) -> str:
         return self._output_dir
