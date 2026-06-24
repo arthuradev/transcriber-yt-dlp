@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 6 — yt-dlp metadata probe.
+Phase 7 — Download planner + dry-run.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -85,11 +85,25 @@ Phase 6 — yt-dlp metadata probe.
 - [x] Update CHANGELOG, TASKS, media-download design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.6.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 7.
+- [x] Ask user permission to proceed to Phase 7.
+
+## Phase 7 checklist
+- [x] Add download profiles (`core.profiles`) + category filtering.
+- [x] Add pure output-path planning (`core.paths`).
+- [x] Add `DownloadPlan`/`PlannedItem` (`core.plan`).
+- [x] Add risk classification (`safety.risk`).
+- [x] Add `DownloadPlanner` (application).
+- [x] Add dry-run renderer (`ui.plan`) with markup escaping.
+- [x] Add interactive `DownloadFlow` wired to download menu actions.
+- [x] Add plan/risk i18n keys; shell action-handler routing.
+- [x] Add profiles/paths/risk/planner/renderer/flow/shell tests.
+- [x] Update CHANGELOG, TASKS, safety-pipeline design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.7.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 8.
 
 ## Backlog notes
-- No downloads yet (probe only); download planner/dry-run is Phase 7.
-- Interactive URL input wired into the menu in Phase 7.
+- Planning + dry-run only; execution lands in Phase 8.
 - No transcription implementation yet.
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

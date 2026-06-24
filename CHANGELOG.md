@@ -7,7 +7,34 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 7: Download planner and dry-run (safe operation plans).
+- Phase 8: Download executor with progress.
+
+## [v0.7.0] - 2026-06-24
+
+### Added
+- Download planning and dry-run (no execution):
+  - `core.profiles`: the eight download profiles + category filtering.
+  - `core.paths`: pure output-path planning (sanitization, site/date/media-id
+    organization; date injected for determinism).
+  - `core.plan.DownloadPlan` / `PlannedItem`: the structured, inspectable plan.
+  - `safety.risk.classify_download`: risk classification (metadata = low,
+    download = medium/confirm, batch > 5 / overwrite / cookies = high / strong
+    confirm).
+  - `application.planner.DownloadPlanner`: builds plans from probe results.
+  - `ui.plan.render_plan`: risk-colored dry-run renderer (escapes bracketed
+    format selectors).
+  - `ui.download_flow.DownloadFlow`: interactive URL -> probe -> profile ->
+    output -> dry-run -> confirmation, wired to the download menu actions.
+- `AppShell` action handler routing download actions to the flow.
+- Plan/risk i18n keys (pt-BR / en-US).
+
+### Tests
+- Added profiles, paths, risk, planner, plan-renderer, download-flow, and
+  shell-routing tests.
+
+### Notes
+- Nothing downloads or writes files in this phase; the flow stops at the dry-run
+  and confirmation. Execution lands in Phase 8.
 
 ## [v0.6.0] - 2026-06-23
 

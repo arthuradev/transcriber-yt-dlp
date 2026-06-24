@@ -138,6 +138,65 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "... and {count} more item(s)",
         Language.PT_BR: "... e mais {count} item(ns)",
     },
+    "plan.title": {
+        Language.EN_US: "Dry run (no download yet)",
+        Language.PT_BR: "Simulação (ainda sem download)",
+    },
+    "plan.profile": {
+        Language.EN_US: "Profile",
+        Language.PT_BR: "Perfil",
+    },
+    "plan.format": {
+        Language.EN_US: "Format",
+        Language.PT_BR: "Formato",
+    },
+    "plan.output": {
+        Language.EN_US: "Output folder",
+        Language.PT_BR: "Pasta de saída",
+    },
+    "plan.items": {
+        Language.EN_US: "Items",
+        Language.PT_BR: "Itens",
+    },
+    "plan.risk": {
+        Language.EN_US: "Risk",
+        Language.PT_BR: "Risco",
+    },
+    "plan.warnings": {
+        Language.EN_US: "Warnings",
+        Language.PT_BR: "Avisos",
+    },
+    "plan.confirm": {
+        Language.EN_US: "Proceed with this plan?",
+        Language.PT_BR: "Prosseguir com este plano?",
+    },
+    "plan.confirm_strong": {
+        Language.EN_US: "This is a high-risk operation. Type the confirmation to proceed.",
+        Language.PT_BR: "Operação de alto risco. Digite a confirmação para prosseguir.",
+    },
+    "plan.cancelled": {
+        Language.EN_US: "Cancelled.",
+        Language.PT_BR: "Cancelado.",
+    },
+    "plan.execution_later": {
+        Language.EN_US: "Execution will be available in a later phase.",
+        Language.PT_BR: "A execução estará disponível em uma fase futura.",
+    },
+    "plan.enter_url": {
+        Language.EN_US: "Paste a URL:",
+        Language.PT_BR: "Cole uma URL:",
+    },
+    "plan.select_profile": {
+        Language.EN_US: "Select a profile:",
+        Language.PT_BR: "Selecione um perfil:",
+    },
+    "plan.probe_failed": {
+        Language.EN_US: "Could not read metadata: {error}",
+        Language.PT_BR: "Não foi possível ler os metadados: {error}",
+    },
+    "risk.low": {Language.EN_US: "low", Language.PT_BR: "baixo"},
+    "risk.medium": {Language.EN_US: "medium", Language.PT_BR: "médio"},
+    "risk.high": {Language.EN_US: "high", Language.PT_BR: "alto"},
 }
 
 

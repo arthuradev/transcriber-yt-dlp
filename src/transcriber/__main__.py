@@ -1,8 +1,8 @@
 """Application entry point.
 
-Launches the TUI shell (startup banner, animation, and main menu). Menu actions
-are placeholders until later phases wire the real download/transcription/cleanup
-use cases.
+Launches the TUI shell (startup banner, animation, and main menu). Download
+menu actions run the planning/dry-run flow (no execution yet); other actions are
+placeholders until later phases.
 """
 
 from __future__ import annotations
@@ -11,18 +11,17 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from rich.console import Console
+
     from transcriber.config.models import UserConfig
     from transcriber.ui.i18n import Translator
+    from transcriber.ui.menu import MenuAction
 
 
 def _build_weather_line_provider(
     config: UserConfig, translator: Translator
 ) -> Callable[[], str | None] | None:
-    """Build a cached weather-line provider, or ``None`` when weather is off.
-
-    When enabled but the API key is missing, returns a provider that renders the
-    discreet "unavailable" warning. Weather never blocks or breaks startup.
-    """
+    """Build a cached weather-line provider, or ``None`` when weather is off."""
     if not (config.weather.enabled and config.weather.show_on_startup):
         return None
 
@@ -42,11 +41,48 @@ def _build_weather_line_provider(
     return lambda: render_weather_line(service.get(query, units), translator)
 
 
+def _build_action_handler(
+    console: Console, config: UserConfig, translator: Translator
+) -> Callable[[MenuAction], bool]:
+    """Build the menu-action handler routing download actions to the dry-run flow."""
+    from transcriber.adapters.yt_dlp_engine import YtDlpEngine
+    from transcriber.application.planner import DownloadPlanner
+    from transcriber.application.probe import MediaProbeService
+    from transcriber.ui.download_flow import DownloadFlow, QuestionaryDownloadFlowPrompts
+    from transcriber.ui.menu import MenuAction
+
+    categories: dict[MenuAction, str] = {
+        MenuAction.DOWNLOAD_VIDEO: "video",
+        MenuAction.DOWNLOAD_AUDIO: "audio",
+        MenuAction.DOWNLOAD_TRANSCRIPT: "transcript",
+    }
+    probe_service = MediaProbeService(YtDlpEngine())
+    planner = DownloadPlanner()
+    prompts = QuestionaryDownloadFlowPrompts(translator)
+
+    def handle(action: MenuAction) -> bool:
+        category = categories.get(action)
+        if category is None:
+            return False
+        DownloadFlow(
+            probe_service=probe_service,
+            planner=planner,
+            console=console,
+            translator=translator,
+            paths=config.paths,
+            prompts=prompts,
+        ).run(category)
+        return True
+
+    return handle
+
+
 def main() -> int:
     """Run the application. Returns a process exit code."""
     from transcriber.application.first_run import FirstRunService
     from transcriber.storage.config_store import ConfigStore, default_config_path
     from transcriber.ui.ascii_art import choose_art, load_art_dir, locate_ascii_dir
+    from transcriber.ui.console import build_console
     from transcriber.ui.first_run_prompts import QuestionaryFirstRunPrompts
     from transcriber.ui.i18n import Translator
     from transcriber.ui.shell import AppShell
@@ -60,13 +96,15 @@ def main() -> int:
         config = store.load()
 
     translator = Translator(config.language)
+    console = build_console(config.ui.theme)
     welcome_dir = locate_ascii_dir("welcome")
     welcome_art = choose_art(load_art_dir(welcome_dir)) if welcome_dir is not None else None
     return AppShell(
-        theme_name=config.ui.theme,
+        console=console,
         translator=translator,
         welcome_art=welcome_art,
         weather_line_provider=_build_weather_line_provider(config, translator),
+        action_handler=_build_action_handler(console, config, translator),
     ).run()
 
 

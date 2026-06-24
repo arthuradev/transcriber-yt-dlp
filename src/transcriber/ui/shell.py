@@ -24,6 +24,7 @@ from transcriber.ui.theme import DEFAULT_THEME_NAME
 
 SelectAction = Callable[[], MenuAction]
 WeatherLineProvider = Callable[[], str | None]
+ActionHandler = Callable[[MenuAction], bool]
 
 WELCOME_ART_MIN_WIDTH = 110
 
@@ -41,6 +42,7 @@ class AppShell:
         translator: Translator | None = None,
         welcome_art: AsciiArt | None = None,
         weather_line_provider: WeatherLineProvider | None = None,
+        action_handler: ActionHandler | None = None,
     ) -> None:
         self.console = console if console is not None else build_console(theme_name)
         self._translator = translator if translator is not None else Translator()
@@ -48,6 +50,7 @@ class AppShell:
         self._animate = animate
         self._welcome_art = welcome_art
         self._weather_line_provider = weather_line_provider
+        self._action_handler = action_handler
 
     def _default_select(self) -> MenuAction:
         return prompt_main_menu(self._translator)
@@ -61,7 +64,9 @@ class AppShell:
             if action is MenuAction.EXIT:
                 self._render_goodbye()
                 return 0
-            self._render_placeholder(action)
+            handled = self._action_handler(action) if self._action_handler is not None else False
+            if not handled:
+                self._render_placeholder(action)
             self._render_header(animate=False, welcome=False)
 
     def _render_header(self, *, animate: bool, welcome: bool) -> None:
