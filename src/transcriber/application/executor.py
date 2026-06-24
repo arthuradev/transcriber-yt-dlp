@@ -43,6 +43,7 @@ class DownloadExecutor:
                 output_path=item.output_path,
                 extract_audio=plan.extract_audio,
                 audio_format=plan.audio_format,
+                cookies_from_browser=plan.cookies_from_browser,
             )
             result = self._engine.download(request, on_progress)
             if result.ok and self._archive is not None and item.media_id:

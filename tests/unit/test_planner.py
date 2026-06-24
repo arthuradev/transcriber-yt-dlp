@@ -91,6 +91,18 @@ def test_plan_batch_flattens_and_classifies() -> None:
     assert plan.risk is RiskLevel.HIGH
 
 
+def test_plan_with_cookies_is_high_risk() -> None:
+    plan = _planner().plan_batch(
+        [_media()],
+        DOWNLOAD_PROFILES["video_best"],
+        PathsConfig(),
+        cookies_from_browser="chrome",
+    )
+    assert plan.cookies_from_browser == "chrome"
+    assert plan.risk is RiskLevel.HIGH
+    assert plan.requires_strong_confirmation
+
+
 def test_plan_marks_duplicates() -> None:
     class _Archive:
         def contains(self, key: str) -> bool:

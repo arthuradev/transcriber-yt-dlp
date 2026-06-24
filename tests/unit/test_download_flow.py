@@ -61,6 +61,9 @@ class _ScriptedPrompts:
     def confirm(self, *, strong: bool) -> bool:
         return self._confirm
 
+    def confirm_cookies(self) -> bool:
+        return False
+
 
 def _media() -> MediaMetadata:
     return MediaMetadata(

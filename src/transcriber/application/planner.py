@@ -45,6 +45,8 @@ class DownloadPlanner:
         probes: Sequence[ProbeResult],
         profile: DownloadProfile,
         paths: PathsConfig,
+        *,
+        cookies_from_browser: str | None = None,
     ) -> DownloadPlan:
         """Plan one or more probe results as a single operation."""
         today = self._today()
@@ -61,6 +63,7 @@ class DownloadPlanner:
             item_count=declared,
             profile_kind=profile.kind,
             overwrite=paths.overwrite_policy == "overwrite",
+            uses_cookies=bool(cookies_from_browser),
         )
 
         warnings = list(assessment.reasons)
@@ -86,6 +89,7 @@ class DownloadPlanner:
             extract_audio=profile.extract_audio,
             audio_format=profile.audio_format,
             is_downloadable=profile.kind in ("video", "audio"),
+            cookies_from_browser=cookies_from_browser,
         )
 
     def _items_for(

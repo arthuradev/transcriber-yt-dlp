@@ -22,6 +22,7 @@ def _plan(
     format_selector: str = "bv*+ba/b",
     extract_audio: bool = False,
     audio_format: str | None = None,
+    cookies: str | None = None,
 ) -> DownloadPlan:
     return DownloadPlan(
         profile_id=profile_id,
@@ -37,6 +38,7 @@ def _plan(
         extract_audio=extract_audio,
         audio_format=audio_format,
         is_downloadable=True,
+        cookies_from_browser=cookies,
     )
 
 
@@ -125,3 +127,10 @@ def test_executor_records_success_in_archive() -> None:
     archive = _Archive()
     DownloadExecutor(engine, archive=archive).execute(_plan((item,)), on_progress=lambda p: None)
     assert "Yt:id" in archive.added
+
+
+def test_executor_passes_cookies() -> None:
+    item = PlannedItem("T", "id", "https://x", "out/T.mp4")
+    engine = _Engine(lambda r: DownloadResult(True, r.output_path, None))
+    DownloadExecutor(engine).execute(_plan((item,), cookies="chrome"), on_progress=lambda p: None)
+    assert engine.requests[0].cookies_from_browser == "chrome"

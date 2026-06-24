@@ -345,6 +345,18 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "Cleanup failed: {error}",
         Language.PT_BR: "Falha na limpeza: {error}",
     },
+    "cookies.title": {
+        Language.EN_US: "Cookies (advanced)",
+        Language.PT_BR: "Cookies (avançado)",
+    },
+    "cookies.warning": {
+        Language.EN_US: "Browser cookies will be sent to the site. Use only on sites you trust.",
+        Language.PT_BR: "Cookies do navegador serão enviados ao site. Use só em sites confiáveis.",
+    },
+    "cookies.confirm": {
+        Language.EN_US: "Use your browser cookies for this download?",
+        Language.PT_BR: "Usar os cookies do navegador neste download?",
+    },
 }
 
 

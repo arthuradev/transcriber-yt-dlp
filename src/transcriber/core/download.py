@@ -53,6 +53,7 @@ class DownloadRequest:
     output_path: str
     extract_audio: bool
     audio_format: str | None
+    cookies_from_browser: str | None = None
 
 
 @dataclass(frozen=True)

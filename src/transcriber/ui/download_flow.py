@@ -16,12 +16,13 @@ from typing import Protocol
 import questionary
 from rich.console import Console
 from rich.markup import escape
+from rich.panel import Panel
 
 from transcriber.application.batch import BatchProbeService
 from transcriber.application.executor import DownloadExecutor
 from transcriber.application.planner import DownloadPlanner
 from transcriber.application.probe import MediaProbeService
-from transcriber.config.models import PathsConfig
+from transcriber.config.models import CookiesConfig, PathsConfig
 from transcriber.core.media import MediaError, MediaFormat, MediaMetadata, ProbeResult
 from transcriber.core.plan import DownloadPlan
 from transcriber.core.profiles import (
@@ -30,6 +31,8 @@ from transcriber.core.profiles import (
     manual_profile,
     profiles_for_category,
 )
+from transcriber.safety.audit import AuditLog
+from transcriber.safety.cookies import evaluate_cookies
 from transcriber.ui.ascii_art import AsciiArt, fits, render_art
 from transcriber.ui.download_result import render_download_summary
 from transcriber.ui.i18n import Translator
@@ -73,6 +76,7 @@ class DownloadFlowPrompts(Protocol):
     def select_format(self, formats: Sequence[MediaFormat]) -> MediaFormat | None: ...
     def ask_output_dir(self, default: str) -> str: ...
     def confirm(self, *, strong: bool) -> bool: ...
+    def confirm_cookies(self) -> bool: ...
 
 
 class QuestionaryDownloadFlowPrompts:
@@ -128,6 +132,9 @@ class QuestionaryDownloadFlowPrompts:
         message = self._t("plan.confirm_strong") if strong else self._t("plan.confirm")
         return bool(questionary.confirm(message, default=not strong).ask())
 
+    def confirm_cookies(self) -> bool:
+        return bool(questionary.confirm(self._t("cookies.confirm"), default=False).ask())
+
 
 class DownloadFlow:
     """Drives the source -> probe -> profile -> dry-run -> execute sequence."""
@@ -144,6 +151,8 @@ class DownloadFlow:
         executor: DownloadExecutor | None = None,
         batch_service: BatchProbeService | None = None,
         success_art: AsciiArt | None = None,
+        cookies: CookiesConfig | None = None,
+        audit: AuditLog | None = None,
     ) -> None:
         self._probe_service = probe_service
         self._planner = planner
@@ -154,6 +163,8 @@ class DownloadFlow:
         self._executor = executor
         self._batch_service = batch_service
         self._success_art = success_art
+        self._cookies = cookies if cookies is not None else CookiesConfig()
+        self._audit = audit
 
     def run(self, category: str) -> None:
         self._run(category)
@@ -209,9 +220,27 @@ class DownloadFlow:
     def _build_plan(self, probes: Sequence[ProbeResult], profile: DownloadProfile) -> DownloadPlan:
         output_dir = self._prompts.ask_output_dir(self._paths.download_dir)
         paths = self._paths.model_copy(update={"download_dir": output_dir})
-        plan = self._planner.plan_batch(probes, profile, paths)
+        cookies_browser = self._resolve_cookies()
+        plan = self._planner.plan_batch(
+            probes, profile, paths, cookies_from_browser=cookies_browser
+        )
         render_plan(self._console, plan, self._t)
         return plan
+
+    def _resolve_cookies(self) -> str | None:
+        """Cookie guard: only return a browser when enabled, allowed, and confirmed."""
+        if not self._cookies.enabled:
+            return None
+        decision = evaluate_cookies(self._cookies)
+        if not decision.allowed:
+            self._console.print(f"[warning]{escape(decision.reason)}[/warning]")
+            return None
+        self._console.print(
+            Panel(self._t("cookies.warning"), title=self._t("cookies.title"), border_style="error")
+        )
+        if decision.requires_confirmation and not self._prompts.confirm_cookies():
+            return None
+        return decision.browser
 
     def _execute_plan(self, plan: DownloadPlan) -> None:
         if (
@@ -230,6 +259,14 @@ class DownloadFlow:
             outcome = self._executor.execute(plan, on_progress=presenter.update)
 
         render_download_summary(self._console, outcome, self._t)
+        if self._audit is not None:
+            self._audit.record(
+                "download",
+                plan.risk,
+                f"items={plan.item_count} ok={outcome.succeeded} "
+                f"skipped={outcome.skipped} failed={outcome.failed} "
+                f"cookies={'yes' if plan.cookies_from_browser else 'no'}",
+            )
         if (
             outcome.ok
             and self._success_art is not None

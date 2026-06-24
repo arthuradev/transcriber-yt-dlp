@@ -7,7 +7,37 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 14: Safety pipeline and cookies.
+- Phase 15: History, logs, reports (SQLite/history and report output).
+
+## [v0.14.0] - 2026-06-24
+
+### Added
+- Cookie guard (`safety.cookies.evaluate_cookies`): cookies are advanced and
+  opt-in (never auto-enabled), allowed only when enabled + browser-cookies
+  allowed + a supported browser is configured, and confirmed before use. The
+  download flow warns, requires confirmation, then passes `cookiesfrombrowser`
+  to yt-dlp. Cookies make the operation high risk (strong confirmation).
+- Redaction helpers (`safety.redaction`): `redact_secrets` / `redact_url_tokens`
+  / `redact` strip secrets and token-bearing URL parameters before logging.
+- Audit events (`safety.audit.AuditLog`): records sensitive actions (action,
+  risk, secret-free detail, timestamp); the download flow records a `download`
+  event.
+- Cookie i18n keys; `confirm_cookies` flow prompt.
+
+### Changed
+- `DownloadRequest` / `DownloadPlan` carry `cookies_from_browser`; the planner,
+  executor, and yt-dlp adapter thread it through; the planner classifies
+  cookie use as high risk.
+
+### Tests
+- Added cookie-guard, redaction, audit, planner (cookies), executor (cookies),
+  and cookie-flow integration tests; verified end-to-end (warning, strong
+  confirmation, request carries cookies, audit recorded, no URL leak).
+
+### Notes
+- Cookies are never auto-enabled, never committed, and never logged.
+- The real `cookiesfrombrowser` extraction runs in the (injectable, not
+  network-tested) yt-dlp adapter.
 
 ## [v0.13.0] - 2026-06-24
 

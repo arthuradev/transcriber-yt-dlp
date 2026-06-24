@@ -55,6 +55,9 @@ class _Prompts:
     def confirm(self, *, strong: bool) -> bool:
         return True
 
+    def confirm_cookies(self) -> bool:
+        return False
+
 
 def test_batch_flow_probes_and_plans_all_urls(
     console_buffer: tuple[Console, io.StringIO],

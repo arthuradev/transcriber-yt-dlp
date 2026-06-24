@@ -57,6 +57,7 @@ def _build_action_handler(
     from transcriber.application.subtitles import SubtitleService
     from transcriber.application.transcription import TranscriptionService
     from transcriber.config.secrets import llm_api_key
+    from transcriber.safety.audit import AuditLog
     from transcriber.storage.archive import FileDownloadArchive, default_archive_path
     from transcriber.ui.ascii_art import choose_art, load_art_dir, locate_ascii_dir
     from transcriber.ui.cleanup_flow import CleanupFlow, QuestionaryCleanupFlowPrompts
@@ -86,6 +87,7 @@ def _build_action_handler(
         OpenAICompatibleProvider(base_url=config.llm.base_url, api_key=llm_key or "")
     )
     cleanup_prompts = QuestionaryCleanupFlowPrompts(translator)
+    audit = AuditLog()
     success_dir = locate_ascii_dir("success")
     success_art = choose_art(load_art_dir(success_dir)) if success_dir is not None else None
 
@@ -139,6 +141,8 @@ def _build_action_handler(
             executor=executor,
             batch_service=batch_service,
             success_art=success_art,
+            cookies=config.cookies,
+            audit=audit,
         ).run(category)
         return True
 

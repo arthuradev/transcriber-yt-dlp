@@ -44,3 +44,16 @@ dry-run -> pre-validation) are implemented for downloads:
 
 Execution, post-validation, audit, and reporting arrive in later phases. Nothing
 in Phase 7 downloads or writes files.
+
+## Cookies, redaction, audit (Phase 14)
+- `safety.cookies.evaluate_cookies` — the cookie guard: cookies are advanced and
+  opt-in (never auto-enabled), allowed only when enabled + browser-cookies
+  allowed + a supported browser is configured, and confirmed before use. The
+  download flow shows a warning, requires confirmation, and only then passes
+  `cookiesfrombrowser` to yt-dlp. Cookies make the operation high risk (strong
+  confirmation) and are never logged.
+- `safety.redaction` — `redact_secrets` / `redact_url_tokens` / `redact` strip
+  secrets and token-bearing URL parameters from any string before logging.
+- `safety.audit.AuditLog` — records sensitive actions (action, risk, secret-free
+  detail, timestamp); the download flow records a `download` event. Persistence
+  and reporting arrive in Phase 15.

@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 13 — DeepSeek/OpenAI-compatible cleanup.
+Phase 14 — Safety pipeline and cookies.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -178,10 +178,22 @@ Phase 13 — DeepSeek/OpenAI-compatible cleanup.
 - [x] Update CHANGELOG, TASKS, llm-cleanup design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.13.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 14.
+- [x] Ask user permission to proceed to Phase 14.
+
+## Phase 14 checklist
+- [x] Add cookie guard (`safety.cookies`), opt-in/confirmed/never auto-enabled.
+- [x] Add redaction helpers (`safety.redaction`).
+- [x] Add audit events (`safety.audit.AuditLog`); record download events.
+- [x] Thread `cookies_from_browser` through request/plan/planner/executor/adapter.
+- [x] Classify cookie use as high risk; add `confirm_cookies` + cookie warning.
+- [x] Add cookie/redaction/audit/planner/executor/flow tests; verify end-to-end.
+- [x] Update CHANGELOG, TASKS, safety-pipeline design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.14.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 15.
 
 ## Backlog notes
-- LLM may only format; transcript never logged; key in `.env` only.
-- Real LLM network call is injectable/not network-tested (no key in CI).
-- Full safety pipeline + cookies land in Phase 14.
+- Cookies: never auto-enabled, never committed, never logged.
+- Audit persistence + reports land in Phase 15.
+- API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

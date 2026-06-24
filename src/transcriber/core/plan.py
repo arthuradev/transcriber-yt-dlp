@@ -39,6 +39,7 @@ class DownloadPlan:
     extract_audio: bool = False
     audio_format: str | None = None
     is_downloadable: bool = True
+    cookies_from_browser: str | None = None
 
     @property
     def item_count(self) -> int:

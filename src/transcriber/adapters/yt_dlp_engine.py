@@ -92,6 +92,8 @@ def _default_download(request: DownloadRequest, on_progress: ProgressCallback) -
         options["postprocessors"] = [
             {"key": "FFmpegExtractAudio", "preferredcodec": request.audio_format or "mp3"}
         ]
+    if request.cookies_from_browser:
+        options["cookiesfrombrowser"] = (request.cookies_from_browser,)
 
     try:
         with YoutubeDL(options) as ydl:
