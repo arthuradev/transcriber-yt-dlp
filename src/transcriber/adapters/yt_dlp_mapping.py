@@ -7,8 +7,10 @@ be type-checked strictly and unit-tested with plain dicts. Inputs are treated as
 
 from __future__ import annotations
 
+import os
 from typing import Any, cast
 
+from transcriber.core.download import DownloadProgress, DownloadStatus
 from transcriber.core.media import (
     MediaError,
     MediaFormat,
@@ -104,3 +106,31 @@ def map_info(info: dict[str, Any]) -> ProbeResult:
     if info.get("_type") == "playlist" or info.get("entries") is not None:
         return _map_playlist(info)
     return _map_media(info)
+
+
+_STATUS = {
+    "downloading": DownloadStatus.DOWNLOADING,
+    "finished": DownloadStatus.FINISHED,
+    "error": DownloadStatus.ERROR,
+}
+
+
+def map_progress(hook: dict[str, Any]) -> DownloadProgress:
+    """Map a yt-dlp progress-hook dict to a ``DownloadProgress``."""
+    total = _opt_int(hook.get("total_bytes"))
+    if total is None:
+        total = _opt_int(hook.get("total_bytes_estimate"))
+    return DownloadProgress(
+        status=_STATUS.get(_str(hook.get("status")), DownloadStatus.DOWNLOADING),
+        downloaded_bytes=_opt_int(hook.get("downloaded_bytes")) or 0,
+        total_bytes=total,
+        speed=_opt_float(hook.get("speed")),
+        eta_seconds=_opt_int(hook.get("eta")),
+        filename=_opt_str(hook.get("filename")),
+    )
+
+
+def output_template(output_path: str) -> str:
+    """Build a yt-dlp ``outtmpl`` from a planned path (replaces the extension)."""
+    stem, _ext = os.path.splitext(output_path)
+    return f"{stem}.%(ext)s"

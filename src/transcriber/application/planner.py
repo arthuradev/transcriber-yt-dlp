@@ -88,6 +88,9 @@ class DownloadPlanner:
             requires_strong_confirmation=assessment.requires_strong_confirmation,
             requires_ffmpeg=profile.requires_ffmpeg,
             warnings=tuple(warnings),
+            extract_audio=profile.extract_audio,
+            audio_format=profile.audio_format,
+            is_downloadable=profile.kind in ("video", "audio"),
         )
 
     def _plan_item(

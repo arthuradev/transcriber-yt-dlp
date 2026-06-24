@@ -34,6 +34,9 @@ class DownloadPlan:
     requires_strong_confirmation: bool
     requires_ffmpeg: bool
     warnings: tuple[str, ...]
+    extract_audio: bool = False
+    audio_format: str | None = None
+    is_downloadable: bool = True
 
     @property
     def item_count(self) -> int:

@@ -50,3 +50,19 @@ Metadata probing (no downloads yet):
 
 Interactive URL input is wired into the menu with the download planner/dry-run
 flow in Phase 7.
+
+## Execution implementation (Phase 8 — single URL)
+- `core.download` — pure domain: `DownloadStatus`, `DownloadProgress`,
+  `DownloadRequest`, `DownloadResult`, `DownloadOutcome`, `DownloadError`.
+- `ports.media_engine.DownloadEnginePort` — `download(request, on_progress)`
+  (kept separate from `MediaEnginePort` so probe-only fakes still satisfy it).
+- `adapters.yt_dlp_engine.YtDlpEngine.download` — real yt-dlp download with
+  progress hooks and optional audio extraction; the downloader is injectable.
+  `yt_dlp_mapping.map_progress` / `output_template` are strictly typed and tested.
+- `application.executor.DownloadExecutor` — runs the plan's items and aggregates
+  results.
+- `ui.progress.ProgressPresenter` — Rich live progress (terminal only).
+- `ui.download_result.render_download_summary` — success/partial/failure panel.
+- The `DownloadFlow` now executes after confirmation (for downloadable
+  video/audio profiles), shows progress, renders the summary, and shows success
+  art. Transcript/metadata profiles remain non-executing for now.

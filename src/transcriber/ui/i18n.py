@@ -197,6 +197,26 @@ _CATALOG: dict[str, dict[Language, str]] = {
     "risk.low": {Language.EN_US: "low", Language.PT_BR: "baixo"},
     "risk.medium": {Language.EN_US: "medium", Language.PT_BR: "médio"},
     "risk.high": {Language.EN_US: "high", Language.PT_BR: "alto"},
+    "download.downloading": {
+        Language.EN_US: "Downloading",
+        Language.PT_BR: "Baixando",
+    },
+    "download.success_title": {
+        Language.EN_US: "Download complete",
+        Language.PT_BR: "Download concluído",
+    },
+    "download.partial_title": {
+        Language.EN_US: "Partly completed",
+        Language.PT_BR: "Parcialmente concluído",
+    },
+    "download.failed_title": {
+        Language.EN_US: "Download failed",
+        Language.PT_BR: "Falha no download",
+    },
+    "download.summary": {
+        Language.EN_US: "{ok} succeeded, {failed} failed",
+        Language.PT_BR: "{ok} concluído(s), {failed} com falha",
+    },
 }
 
 

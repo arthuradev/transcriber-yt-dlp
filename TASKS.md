@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 7 — Download planner + dry-run.
+Phase 8 — Download executor + progress.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -100,10 +100,26 @@ Phase 7 — Download planner + dry-run.
 - [x] Update CHANGELOG, TASKS, safety-pipeline design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.7.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 8.
+- [x] Ask user permission to proceed to Phase 8.
+
+## Phase 8 checklist
+- [x] Add download domain (`core.download`).
+- [x] Add `DownloadEnginePort.download`.
+- [x] Add real yt-dlp download + progress hook + result extraction.
+- [x] Add `map_progress` / `output_template` (strictly typed).
+- [x] Add `DownloadExecutor` (application).
+- [x] Add `ProgressPresenter` and `render_download_summary` (ui).
+- [x] Wire execution into `DownloadFlow` after confirmation.
+- [x] Add download i18n keys.
+- [x] Add mapping/executor/summary/flow tests; verify real download locally.
+- [x] Update CHANGELOG, TASKS, media-download design doc.
+- [x] Run quality gates.
+- [x] Commit, merge to `main`, tag `v0.8.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 9.
 
 ## Backlog notes
-- Planning + dry-run only; execution lands in Phase 8.
-- No transcription implementation yet.
+- Single URL execution; playlist/batch execution is Phase 10.
+- Quality/profile selection refinements are Phase 9.
+- No transcription implementation yet (Phase 11+).
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

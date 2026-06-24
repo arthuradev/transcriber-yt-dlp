@@ -7,7 +7,35 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 8: Download executor with progress.
+- Phase 9: Profiles and formats (quality/profile selection).
+
+## [v0.8.0] - 2026-06-24
+
+### Added
+- Download execution with progress (single URL):
+  - `core.download`: `DownloadStatus`, `DownloadProgress`, `DownloadRequest`,
+    `DownloadResult`, `DownloadOutcome`, `DownloadError` (pure domain).
+  - `ports.media_engine.DownloadEnginePort`: `download(request, on_progress)`.
+  - `adapters.yt_dlp_engine.YtDlpEngine.download`: real yt-dlp download with
+    progress hooks and optional audio extraction; injectable downloader.
+  - `adapters.yt_dlp_mapping.map_progress` / `output_template` (strictly typed).
+  - `application.executor.DownloadExecutor`: runs plan items, aggregates results.
+  - `ui.progress.ProgressPresenter`: Rich live progress (terminal only).
+  - `ui.download_result.render_download_summary`: success/partial/failure panel.
+- `DownloadFlow` now executes after confirmation for downloadable (video/audio)
+  profiles, shows progress, renders the summary, and shows success art.
+- Download i18n keys (pt-BR / en-US).
+
+### Changed
+- `DownloadPlan` carries `extract_audio`, `audio_format`, and `is_downloadable`.
+
+### Tests
+- Added progress-mapping, executor, summary-renderer, and flow-execution tests.
+  Verified the real yt-dlp download path end-to-end against a local HTTP server.
+
+### Notes
+- Single URL focus; playlist/batch execution and history/reports come later.
+- Transcript/metadata profiles are not executed yet (transcript = Phase 12).
 
 ## [v0.7.0] - 2026-06-24
 

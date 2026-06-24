@@ -15,14 +15,20 @@ import questionary
 from rich.console import Console
 from rich.markup import escape
 
+from transcriber.application.executor import DownloadExecutor
 from transcriber.application.planner import DownloadPlanner
 from transcriber.application.probe import MediaProbeService
 from transcriber.config.models import PathsConfig
 from transcriber.core.media import MediaError
 from transcriber.core.profiles import DownloadProfile, profiles_for_category
+from transcriber.ui.ascii_art import AsciiArt, fits, render_art
+from transcriber.ui.download_result import render_download_summary
 from transcriber.ui.i18n import Translator
 from transcriber.ui.media import render_metadata
 from transcriber.ui.plan import render_plan
+from transcriber.ui.progress import ProgressPresenter
+
+_SUCCESS_ART_MIN_WIDTH = 110
 
 
 class DownloadFlowPrompts(Protocol):
@@ -74,6 +80,8 @@ class DownloadFlow:
         translator: Translator,
         paths: PathsConfig,
         prompts: DownloadFlowPrompts,
+        executor: DownloadExecutor | None = None,
+        success_art: AsciiArt | None = None,
     ) -> None:
         self._probe_service = probe_service
         self._planner = planner
@@ -81,6 +89,8 @@ class DownloadFlow:
         self._t = translator
         self._paths = paths
         self._prompts = prompts
+        self._executor = executor
+        self._success_art = success_art
 
     def run(self, category: str) -> None:
         self._run(category)
@@ -121,7 +131,21 @@ class DownloadFlow:
             self._console.print(f"[muted]{self._t('plan.cancelled')}[/muted]")
             return
 
-        self._console.print(f"[info]{self._t('plan.execution_later')}[/info]")
+        if not plan.is_downloadable or self._executor is None or not plan.has_items:
+            self._console.print(f"[info]{self._t('plan.execution_later')}[/info]")
+            return
+
+        with ProgressPresenter(self._console, self._t) as presenter:
+            outcome = self._executor.execute(plan, on_progress=presenter.update)
+
+        render_download_summary(self._console, outcome, self._t)
+        if (
+            outcome.ok
+            and self._success_art is not None
+            and self._console.is_terminal
+            and fits(self._success_art, self._console.width, min_width=_SUCCESS_ART_MIN_WIDTH)
+        ):
+            render_art(self._console, self._success_art)
 
     def _pause(self) -> None:
         if self._console.is_terminal:
