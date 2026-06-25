@@ -7,7 +7,31 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 19: Packaging (PyInstaller portable exe and installer plan).
+- Phase 20: Public release candidate (final docs, release polish, usability).
+
+## [v0.19.0] - 2026-06-24
+
+### Added
+- Packaging: `Transcriber.spec` (PyInstaller, portable console exe — collects the
+  whole `transcriber` package + `yt_dlp`, bundles `assets/ascii`, excludes the
+  heavy transcription stack, bundles no secrets/user data) and
+  `scripts/pyi_entry.py` (frozen entry point).
+- `scripts/build_exe.ps1` — builds `dist\Transcriber.exe` (`uv sync --extra build`
+  + PyInstaller).
+- `scripts/installer.iss` + `scripts/build_installer.ps1` — Inno Setup installer
+  (installs only the exe; Start Menu shortcuts; uninstaller).
+- `pyinstaller` as an optional `build` extra (`transcriber[build]`).
+- Frozen builds locate `assets/ascii` from `sys._MEIPASS`
+  (`ui.ascii_art.locate_ascii_dir`).
+
+### Tests
+- Added a `_MEIPASS` asset-location test; validated build scripts' syntax via the
+  PowerShell parser and the spec's Python syntax.
+
+### Known limitations
+- The actual exe/installer build is **not** run in CI or this environment
+  (PyInstaller/ISCC absent). Scripts and the spec are syntax-validated; the real
+  build must run on a Windows host.
 
 ## [v0.18.0] - 2026-06-24
 

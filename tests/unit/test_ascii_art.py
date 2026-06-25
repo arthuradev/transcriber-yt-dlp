@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import io
 import random
+import sys
 from pathlib import Path
 
+import pytest
 from rich.console import Console
 
 from transcriber.ui.ascii_art import (
@@ -80,3 +82,11 @@ def test_bundled_welcome_art_loads() -> None:
     arts = load_art_dir(directory)
     assert arts
     assert all(art.width > 0 for art in arts)
+
+
+def test_locate_ascii_dir_uses_meipass(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    bundle = tmp_path / "bundle"
+    (bundle / "assets" / "ascii" / "welcome").mkdir(parents=True)
+    monkeypatch.setattr(sys, "_MEIPASS", str(bundle), raising=False)
+    found = locate_ascii_dir("welcome")
+    assert found == bundle / "assets" / "ascii" / "welcome"

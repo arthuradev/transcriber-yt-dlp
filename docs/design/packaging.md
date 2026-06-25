@@ -41,3 +41,22 @@ The packaged app must check:
   `adapters.system.LocalSystemProbe` (ffmpeg via PATH, GPU via the transcription
   stack, platform), `application.health.build_health_report`, and
   `ui.health.render_health`. The Settings screen shows a Diagnostics table.
+
+## Build (Phase 19)
+- `Transcriber.spec` — PyInstaller spec for a portable console exe. Collects the
+  whole `transcriber` package (lazy imports) + `yt_dlp`, bundles `assets/ascii`,
+  and excludes the heavy transcription stack. Bundles no secrets or user data.
+- `scripts/pyi_entry.py` — the frozen entry point (`transcriber.__main__:main`).
+- `scripts/build_exe.ps1` — `uv sync --extra build` then
+  `uv run pyinstaller Transcriber.spec` → `dist\Transcriber.exe`.
+- `scripts/installer.iss` + `scripts/build_installer.ps1` — Inno Setup installer
+  (`Transcriber-Setup-<version>.exe`); installs only the exe, with Start Menu
+  shortcuts and an uninstaller. Requires ISCC (winget command printed if missing).
+- PyInstaller is an optional `build` extra (`transcriber[build]`), not installed
+  by default or in CI.
+- Frozen builds resolve `assets/ascii` from `sys._MEIPASS` (see
+  `ui.ascii_art.locate_ascii_dir`).
+
+**Not verified here:** the actual exe/installer build is not run in CI or this
+environment (PyInstaller/ISCC not present). Scripts and the spec are
+syntax-validated; the real build must be run on a Windows host.

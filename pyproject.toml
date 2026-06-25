@@ -23,6 +23,8 @@ transcriber = "transcriber.__main__:main"
 [project.optional-dependencies]
 # GPU-only transcription stack (heavy; install separately with CUDA).
 transcription = ["faster-whisper>=1.0"]
+# Build-time tooling for the portable Windows exe.
+build = ["pyinstaller>=6.0"]
 
 [dependency-groups]
 dev = [

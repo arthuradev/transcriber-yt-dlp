@@ -8,6 +8,7 @@ terminal cells so Unicode art (e.g. braille blocks) is sized correctly.
 from __future__ import annotations
 
 import random
+import sys
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -50,12 +51,16 @@ def load_art_dir(directory: Path) -> list[AsciiArt]:
 
 
 def locate_ascii_dir(category: str) -> Path | None:
-    """Find ``assets/ascii/<category>`` from the cwd or the package tree.
+    """Find ``assets/ascii/<category>`` from the bundle, cwd, or package tree.
 
-    Returns ``None`` if it cannot be found (e.g. in a packaged build without
-    bundled assets).
+    In a PyInstaller build, assets are extracted under ``sys._MEIPASS``. Returns
+    ``None`` if the directory cannot be found.
     """
-    candidates: list[Path] = [Path.cwd() / "assets" / "ascii" / category]
+    candidates: list[Path] = []
+    bundle_dir = getattr(sys, "_MEIPASS", None)
+    if bundle_dir:
+        candidates.append(Path(bundle_dir) / "assets" / "ascii" / category)
+    candidates.append(Path.cwd() / "assets" / "ascii" / category)
     package_dir = Path(__file__).resolve().parent
     candidates.extend(parent / "assets" / "ascii" / category for parent in package_dir.parents)
     for candidate in candidates:

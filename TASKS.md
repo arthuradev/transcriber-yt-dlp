@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 18 — Windows bootstrap.
+Phase 19 — Packaging.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -232,10 +232,21 @@ Phase 18 — Windows bootstrap.
 - [x] Update CHANGELOG, TASKS, packaging + scripts docs.
 - [x] Run quality gates (coverage 88% >= 70%).
 - [x] Commit, merge to `main`, tag `v0.18.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 19.
+- [x] Ask user permission to proceed to Phase 19.
+
+## Phase 19 checklist
+- [x] Add PyInstaller spec (`Transcriber.spec`) + entry (`scripts/pyi_entry.py`).
+- [x] Add `scripts/build_exe.ps1` (portable exe).
+- [x] Add Inno Setup `scripts/installer.iss` + `scripts/build_installer.ps1`.
+- [x] Add `build` optional extra (PyInstaller); locate assets from `_MEIPASS`.
+- [x] Add `_MEIPASS` test; validate ps1 + spec syntax.
+- [x] Update CHANGELOG, TASKS, packaging design doc.
+- [x] Run quality gates (coverage 88% >= 70%).
+- [x] Commit, merge to `main`, tag `v0.19.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 20.
 
 ## Backlog notes
-- Packaging (PyInstaller exe + installer plan) is Phase 19.
-- Coverage gate mandatory (>= 70%); current 88%.
-- Locally, if `uv run coverage`/`pyright` is App-Control-blocked, use `python -m`.
+- Real exe/installer build is NOT run in CI/this env (PyInstaller/ISCC absent);
+  scripts + spec are syntax-validated only.
+- Final release candidate (docs, usability) is Phase 20.
 - Do not skip ahead.
