@@ -7,7 +7,33 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 16: Complete tests and architecture checks (coverage target, hard gates).
+- Phase 17: UI/UX polish (animations, themes, messages, layouts).
+
+## [v0.16.0] - 2026-06-24
+
+### Added
+- Mandatory 70% line-coverage gate (`coverage`; `[tool.coverage.report]
+  fail_under = 70`, `__main__.py` omitted). Wired into CI (`coverage run` +
+  `coverage report`). Current coverage: 88%.
+- Strict, data-driven architecture boundary tests: each layer is scanned for
+  forbidden imports (core pure; ports/safety depend only inward; application
+  avoids ui/adapters/storage/observability; ui never imports adapters; etc.).
+- Integration test (`tests/integration/`) exercising plan → execute → archive →
+  history → report together with a fake engine.
+
+### Changed
+- CI runs tests under coverage and fails below 70%.
+
+### Tests
+- `ruff format --check`: pass
+- `ruff check`: pass
+- `pyright` (strict): 0 errors
+- `pytest`: 213 passed
+- `coverage`: 88% (gate >= 70%)
+- `scripts/quality_gate.py`: pass
+
+### Notes
+- No product features changed; this phase hardens the quality safety net.
 
 ## [v0.15.0] - 2026-06-24
 

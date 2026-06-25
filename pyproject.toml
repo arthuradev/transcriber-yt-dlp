@@ -30,6 +30,7 @@ dev = [
   "ruff",
   "pyright",
   "types-pyyaml>=6.0.12.20260518",
+  "coverage>=7.14.3",
 ]
 
 [build-system]
@@ -53,3 +54,16 @@ testpaths = ["tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 include = ["src", "tests", "scripts"]
+
+[tool.coverage.run]
+source = ["transcriber"]
+omit = ["*/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = false
+exclude_also = [
+  'if TYPE_CHECKING:',
+  'raise NotImplementedError',
+  '\.\.\.',
+]

@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 15 — History, logs, reports.
+Phase 16 — Complete tests and architecture checks.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -202,10 +202,20 @@ Phase 15 — History, logs, reports.
 - [x] Update CHANGELOG, TASKS; add history-and-reports design doc.
 - [x] Run quality gates.
 - [x] Commit, merge to `main`, tag `v0.15.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 16.
+- [x] Ask user permission to proceed to Phase 16.
+
+## Phase 16 checklist
+- [x] Add `coverage`; configure `fail_under = 70` (omit `__main__`).
+- [x] Wire coverage gate into CI.
+- [x] Strict data-driven architecture boundary tests (per-layer rules).
+- [x] Add integration test (plan -> execute -> archive -> history -> report).
+- [x] Update CHANGELOG, TASKS, testing design doc.
+- [x] Run quality gates (incl. coverage 88% >= 70%).
+- [x] Commit, merge to `main`, tag `v0.16.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 17.
 
 ## Backlog notes
-- DB, logs, reports are user-local and never committed; no private content.
-- Coverage target + hard architecture gates land in Phase 16.
+- Coverage gate is mandatory (>= 70%); current 88%.
+- Locally, if `uv run coverage`/`pyright` is App-Control-blocked, use `python -m`.
 - API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

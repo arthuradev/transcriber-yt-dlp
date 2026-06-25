@@ -1,8 +1,8 @@
 """Architecture boundary tests.
 
-The core layer must remain pure: no imports of adapters, UI, the application
-layer, storage, subprocess, or network clients. These tests scan the installed
-package source with ``ast`` and fail on any forbidden import.
+Strict, data-driven enforcement of the layered dependency rules: each layer may
+only depend inward. Source is scanned with ``ast`` and any forbidden import
+fails the build.
 """
 
 from __future__ import annotations
@@ -10,29 +10,74 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
+import pytest
+
 import transcriber
 
-FORBIDDEN_IMPORTS: tuple[str, ...] = (
-    "subprocess",
-    "requests",
-    "httpx",
-    "urllib",
-    "socket",
-    "http.client",
-    "transcriber.adapters",
-    "transcriber.ui",
-    "transcriber.application",
-    "transcriber.storage",
-)
+# For each layer, the import prefixes it must NOT use.
+LAYER_FORBIDDEN: dict[str, tuple[str, ...]] = {
+    "core": (
+        "transcriber.adapters",
+        "transcriber.ui",
+        "transcriber.application",
+        "transcriber.storage",
+        "transcriber.observability",
+        "transcriber.safety",
+        "transcriber.ports",
+        "transcriber.config",
+        "subprocess",
+        "requests",
+        "httpx",
+        "urllib",
+        "socket",
+        "http.client",
+    ),
+    "ports": (
+        "transcriber.adapters",
+        "transcriber.ui",
+        "transcriber.application",
+        "transcriber.storage",
+        "transcriber.observability",
+        "transcriber.safety",
+    ),
+    "safety": (
+        "transcriber.adapters",
+        "transcriber.ui",
+        "transcriber.application",
+        "transcriber.storage",
+        "transcriber.observability",
+        "transcriber.ports",
+    ),
+    "application": (
+        "transcriber.adapters",
+        "transcriber.ui",
+        "transcriber.storage",
+        "transcriber.observability",
+    ),
+    "adapters": (
+        "transcriber.ui",
+        "transcriber.application",
+        "transcriber.storage",
+        "transcriber.observability",
+    ),
+    "storage": (
+        "transcriber.ui",
+        "transcriber.application",
+        "transcriber.adapters",
+        "transcriber.observability",
+    ),
+    "observability": (
+        "transcriber.ui",
+        "transcriber.application",
+        "transcriber.adapters",
+    ),
+    "ui": ("transcriber.adapters",),
+}
 
 
 def _package_dir(name: str) -> Path:
     assert transcriber.__file__ is not None
     return Path(transcriber.__file__).resolve().parent / name
-
-
-def _core_dir() -> Path:
-    return _package_dir("core")
 
 
 def _imported_modules(tree: ast.Module) -> list[str]:
@@ -45,38 +90,23 @@ def _imported_modules(tree: ast.Module) -> list[str]:
     return modules
 
 
-def test_core_package_exists() -> None:
-    assert _core_dir().is_dir()
-
-
-def test_core_has_no_forbidden_imports() -> None:
+def _violations(layer: str, forbidden: tuple[str, ...]) -> list[str]:
     offenders: list[str] = []
-    for path in sorted(_core_dir().rglob("*.py")):
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-        for module in _imported_modules(tree):
-            for forbidden in FORBIDDEN_IMPORTS:
-                if module == forbidden or module.startswith(f"{forbidden}."):
-                    offenders.append(f"{path.name}: {module}")
-    assert not offenders, f"core layer imports forbidden modules: {offenders}"
-
-
-def test_ui_does_not_import_adapters() -> None:
-    offenders: list[str] = []
-    for path in sorted(_package_dir("ui").rglob("*.py")):
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-        for module in _imported_modules(tree):
-            if module == "transcriber.adapters" or module.startswith("transcriber.adapters."):
-                offenders.append(f"{path.name}: {module}")
-    assert not offenders, f"ui layer imports adapters directly: {offenders}"
-
-
-def test_application_does_not_import_ui_or_adapters() -> None:
-    forbidden = ("transcriber.ui", "transcriber.adapters")
-    offenders: list[str] = []
-    for path in sorted(_package_dir("application").rglob("*.py")):
+    for path in sorted(_package_dir(layer).rglob("*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         for module in _imported_modules(tree):
             for prefix in forbidden:
                 if module == prefix or module.startswith(f"{prefix}."):
-                    offenders.append(f"{path.name}: {module}")
-    assert not offenders, f"application layer imports ui/adapters: {offenders}"
+                    offenders.append(f"{layer}/{path.name}: imports {module}")
+    return offenders
+
+
+def test_all_layers_exist() -> None:
+    for layer in LAYER_FORBIDDEN:
+        assert _package_dir(layer).is_dir(), f"missing layer: {layer}"
+
+
+@pytest.mark.parametrize("layer", list(LAYER_FORBIDDEN))
+def test_layer_import_boundaries(layer: str) -> None:
+    offenders = _violations(layer, LAYER_FORBIDDEN[layer])
+    assert not offenders, f"forbidden imports in {layer}: {offenders}"
