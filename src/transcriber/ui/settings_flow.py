@@ -16,7 +16,9 @@ from rich.panel import Panel
 from rich.table import Table
 
 from transcriber.config.models import Language, UserConfig
+from transcriber.core.health import HealthReport
 from transcriber.ports.config_repository import ConfigRepository
+from transcriber.ui.health import render_health
 from transcriber.ui.i18n import Translator
 
 
@@ -69,6 +71,7 @@ class SettingsFlow:
         translator: Translator,
         themes: Sequence[str],
         prompts: SettingsFlowPrompts,
+        health_report: HealthReport | None = None,
     ) -> None:
         self._config = config
         self._store = store
@@ -76,9 +79,12 @@ class SettingsFlow:
         self._t = translator
         self._themes = themes
         self._prompts = prompts
+        self._health_report = health_report
 
     def run(self) -> None:
         self._render_settings()
+        if self._health_report is not None:
+            render_health(self._console, self._health_report, self._t)
         action = self._prompts.choose_action()
         if action == "theme":
             theme = self._prompts.select_theme(self._themes)

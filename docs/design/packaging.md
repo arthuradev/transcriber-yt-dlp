@@ -31,3 +31,13 @@ The packaged app must check:
 - GPU/CUDA available for transcription,
 - model cache,
 - API keys if features enabled.
+
+## Implementation (Phase 18)
+- `scripts/bootstrap.ps1` — safe Windows dev setup: checks `uv`, runs `uv sync`,
+  checks ffmpeg and GPU/CUDA (via `nvidia-smi`), and creates `.env` from
+  `.env.example`. No destructive actions; missing tools print the exact winget
+  command rather than installing silently.
+- In-app dependency checks: `ports.system_probe.SystemProbe` +
+  `adapters.system.LocalSystemProbe` (ffmpeg via PATH, GPU via the transcription
+  stack, platform), `application.health.build_health_report`, and
+  `ui.health.render_health`. The Settings screen shows a Diagnostics table.

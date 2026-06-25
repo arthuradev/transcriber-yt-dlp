@@ -7,7 +7,28 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 18: Windows bootstrap (bootstrap.ps1 and dependency checks).
+- Phase 19: Packaging (PyInstaller portable exe and installer plan).
+
+## [v0.18.0] - 2026-06-24
+
+### Added
+- `scripts/bootstrap.ps1` — safe Windows dev setup: checks `uv`, runs `uv sync`,
+  checks ffmpeg and GPU/CUDA (`nvidia-smi`), and creates `.env` from
+  `.env.example`. No destructive actions; missing tools print the winget command
+  instead of installing silently.
+- In-app dependency checks: `core.health` (HealthCheck/HealthReport),
+  `ports.system_probe.SystemProbe` + `adapters.system.LocalSystemProbe` (ffmpeg
+  on PATH, GPU via the transcription stack, platform),
+  `application.health.build_health_report`, and `ui.health.render_health`.
+- The Settings screen now shows a Diagnostics table; health/diagnostics i18n keys.
+
+### Tests
+- Added health, system-probe, health-renderer, and settings-diagnostics tests;
+  validated `bootstrap.ps1` syntax via the PowerShell parser.
+
+### Notes
+- `bootstrap.ps1` is safe by design (StrictMode, `$ErrorActionPreference='Stop'`,
+  no destructive operations, no silent installs).
 
 ## [v0.17.0] - 2026-06-24
 

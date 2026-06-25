@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 17 — UI/UX polish.
+Phase 18 — Windows bootstrap.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -222,11 +222,20 @@ Phase 17 — UI/UX polish.
 - [x] Update CHANGELOG, TASKS, ui-ux design doc.
 - [x] Run quality gates (coverage 88% >= 70%).
 - [x] Commit, merge to `main`, tag `v0.17.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 18.
+- [x] Ask user permission to proceed to Phase 18.
+
+## Phase 18 checklist
+- [x] Add safe `scripts/bootstrap.ps1` (uv/ffmpeg/GPU checks, .env creation).
+- [x] Add health domain + `SystemProbe` port + `LocalSystemProbe` adapter.
+- [x] Add `build_health_report` + `render_health`; show Diagnostics in Settings.
+- [x] Add health/probe/renderer/settings tests; validate ps1 syntax.
+- [x] Update CHANGELOG, TASKS, packaging + scripts docs.
+- [x] Run quality gates (coverage 88% >= 70%).
+- [x] Commit, merge to `main`, tag `v0.18.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 19.
 
 ## Backlog notes
-- All eight menu actions are now functional (downloads, subtitles, transcribe,
-  cleanup, history, settings, exit).
+- Packaging (PyInstaller exe + installer plan) is Phase 19.
 - Coverage gate mandatory (>= 70%); current 88%.
 - Locally, if `uv run coverage`/`pyright` is App-Control-blocked, use `python -m`.
 - Do not skip ahead.

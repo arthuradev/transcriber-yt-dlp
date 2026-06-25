@@ -50,10 +50,12 @@ def _build_action_handler(
     from transcriber.adapters.faster_whisper_engine import FasterWhisperEngine
     from transcriber.adapters.local_files import LocalTextFileReader
     from transcriber.adapters.openai_compatible import OpenAICompatibleProvider
+    from transcriber.adapters.system import LocalSystemProbe
     from transcriber.adapters.yt_dlp_engine import YtDlpEngine
     from transcriber.application.batch import BatchProbeService
     from transcriber.application.cleanup import CleanupService
     from transcriber.application.executor import DownloadExecutor
+    from transcriber.application.health import build_health_report
     from transcriber.application.planner import DownloadPlanner
     from transcriber.application.probe import MediaProbeService
     from transcriber.application.subtitles import SubtitleService
@@ -157,6 +159,7 @@ def _build_action_handler(
                 translator=translator,
                 themes=available_themes(),
                 prompts=settings_prompts,
+                health_report=build_health_report(LocalSystemProbe()),
             ).run()
             return True
 

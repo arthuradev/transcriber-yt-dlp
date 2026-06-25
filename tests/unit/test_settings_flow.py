@@ -8,6 +8,7 @@ from collections.abc import Sequence
 from rich.console import Console
 
 from transcriber.config.models import Language, UserConfig
+from transcriber.core.health import HealthCheck, HealthReport
 from transcriber.ui.i18n import Translator
 from transcriber.ui.settings_flow import SettingsFlow
 
@@ -89,3 +90,18 @@ def test_back_does_not_save(console_buffer: tuple[Console, io.StringIO]) -> None
     store = _Store()
     _flow(console, store, _Prompts(action=None)).run()
     assert store.saved is None
+
+
+def test_renders_health_report(console_buffer: tuple[Console, io.StringIO]) -> None:
+    console, buffer = console_buffer
+    report = HealthReport((HealthCheck("ffmpeg", True, "x"),))
+    SettingsFlow(
+        config=UserConfig(),
+        store=_Store(),
+        console=console,
+        translator=Translator(Language.EN_US),
+        themes=("default",),
+        prompts=_Prompts(action=None),
+        health_report=report,
+    ).run()
+    assert "Diagnostics" in buffer.getvalue()

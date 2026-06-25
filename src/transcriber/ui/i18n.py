@@ -429,6 +429,30 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "off",
         Language.PT_BR: "desligado",
     },
+    "health.title": {
+        Language.EN_US: "Diagnostics",
+        Language.PT_BR: "Diagnóstico",
+    },
+    "health.check": {
+        Language.EN_US: "Check",
+        Language.PT_BR: "Verificação",
+    },
+    "health.status": {
+        Language.EN_US: "Status",
+        Language.PT_BR: "Estado",
+    },
+    "health.detail": {
+        Language.EN_US: "Detail",
+        Language.PT_BR: "Detalhe",
+    },
+    "health.ok": {
+        Language.EN_US: "ok",
+        Language.PT_BR: "ok",
+    },
+    "health.missing": {
+        Language.EN_US: "missing",
+        Language.PT_BR: "ausente",
+    },
 }
 
 
