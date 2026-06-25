@@ -7,7 +7,29 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 17: UI/UX polish (animations, themes, messages, layouts).
+- Phase 18: Windows bootstrap (bootstrap.ps1 and dependency checks).
+
+## [v0.17.0] - 2026-06-24
+
+### Added
+- History view (`ui.history_flow.HistoryFlow`): the "History" menu action now
+  shows recent operations from the SQLite history as a status-colored table.
+- Settings screen (`ui.settings_flow.SettingsFlow`): the "Settings" menu action
+  shows current settings and lets the user change theme/language, persisted via
+  the config repository (theme/language apply on next launch).
+- History/settings i18n keys (pt-BR / en-US).
+
+### Changed
+- The "History" and "Settings" menu actions now run real flows (were
+  placeholders).
+
+### Tests
+- Added history-flow and settings-flow tests; verified both end-to-end (history
+  table; settings theme change persisted through a real ConfigStore).
+
+### Notes
+- No architecture changes (UI controllers over existing ports/services).
+- Coverage gate held (88% >= 70%).
 
 ## [v0.16.0] - 2026-06-24
 

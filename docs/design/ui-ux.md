@@ -39,3 +39,12 @@ After every operation:
 
 ## Terminal width
 Never wrap ASCII art. If too small, use compact fallback.
+
+## Implementation (Phase 17 — polish)
+- `ui.history_flow.HistoryFlow` — the History menu action shows recent operations
+  (from the Phase 15 SQLite history) as a status-colored table.
+- `ui.settings_flow.SettingsFlow` — the Settings menu action shows current
+  settings and lets the user change theme/language, persisted via the config
+  repository (theme/language apply on next launch).
+- Both flows are themed and localized (pt-BR / en-US) and use the established
+  prompt-protocol pattern. No architecture change.

@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 16 — Complete tests and architecture checks.
+Phase 17 — UI/UX polish.
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -212,10 +212,21 @@ Phase 16 — Complete tests and architecture checks.
 - [x] Update CHANGELOG, TASKS, testing design doc.
 - [x] Run quality gates (incl. coverage 88% >= 70%).
 - [x] Commit, merge to `main`, tag `v0.16.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 17.
+- [x] Ask user permission to proceed to Phase 17.
+
+## Phase 17 checklist
+- [x] Add History view flow (recent operations from SQLite history).
+- [x] Add Settings flow (view + edit theme/language, persisted).
+- [x] Wire History/Settings menu actions; add i18n keys.
+- [x] Add history-flow and settings-flow tests; verify end-to-end.
+- [x] Update CHANGELOG, TASKS, ui-ux design doc.
+- [x] Run quality gates (coverage 88% >= 70%).
+- [x] Commit, merge to `main`, tag `v0.17.0`, GitHub Release.
+- [ ] Ask user permission to proceed to Phase 18.
 
 ## Backlog notes
-- Coverage gate is mandatory (>= 70%); current 88%.
+- All eight menu actions are now functional (downloads, subtitles, transcribe,
+  cleanup, history, settings, exit).
+- Coverage gate mandatory (>= 70%); current 88%.
 - Locally, if `uv run coverage`/`pyright` is App-Control-blocked, use `python -m`.
-- API keys live in `.env`, never in config.yaml.
 - Do not skip ahead.

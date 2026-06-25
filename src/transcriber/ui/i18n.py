@@ -357,6 +357,78 @@ _CATALOG: dict[str, dict[Language, str]] = {
         Language.EN_US: "Use your browser cookies for this download?",
         Language.PT_BR: "Usar os cookies do navegador neste download?",
     },
+    "history.title": {
+        Language.EN_US: "Recent operations",
+        Language.PT_BR: "Operações recentes",
+    },
+    "history.empty": {
+        Language.EN_US: "No history yet.",
+        Language.PT_BR: "Nenhum histórico ainda.",
+    },
+    "history.time": {
+        Language.EN_US: "Time",
+        Language.PT_BR: "Hora",
+    },
+    "history.operation": {
+        Language.EN_US: "Operation",
+        Language.PT_BR: "Operação",
+    },
+    "history.status": {
+        Language.EN_US: "Status",
+        Language.PT_BR: "Estado",
+    },
+    "settings.title": {
+        Language.EN_US: "Settings",
+        Language.PT_BR: "Configurações",
+    },
+    "settings.theme": {
+        Language.EN_US: "Theme",
+        Language.PT_BR: "Tema",
+    },
+    "settings.language": {
+        Language.EN_US: "Language",
+        Language.PT_BR: "Idioma",
+    },
+    "settings.weather": {
+        Language.EN_US: "Weather",
+        Language.PT_BR: "Clima",
+    },
+    "settings.llm": {
+        Language.EN_US: "AI cleanup",
+        Language.PT_BR: "Limpeza por IA",
+    },
+    "settings.output": {
+        Language.EN_US: "Output folder",
+        Language.PT_BR: "Pasta de saída",
+    },
+    "settings.prompt": {
+        Language.EN_US: "Change a setting:",
+        Language.PT_BR: "Alterar uma configuração:",
+    },
+    "settings.change_theme": {
+        Language.EN_US: "Change theme",
+        Language.PT_BR: "Alterar tema",
+    },
+    "settings.change_language": {
+        Language.EN_US: "Change language",
+        Language.PT_BR: "Alterar idioma",
+    },
+    "settings.back": {
+        Language.EN_US: "Back",
+        Language.PT_BR: "Voltar",
+    },
+    "settings.saved": {
+        Language.EN_US: "Saved. Some changes apply after restart.",
+        Language.PT_BR: "Salvo. Algumas mudanças se aplicam após reiniciar.",
+    },
+    "common.on": {
+        Language.EN_US: "on",
+        Language.PT_BR: "ligado",
+    },
+    "common.off": {
+        Language.EN_US: "off",
+        Language.PT_BR: "desligado",
+    },
 }
 
 

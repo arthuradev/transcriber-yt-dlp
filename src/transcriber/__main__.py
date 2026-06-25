@@ -63,12 +63,16 @@ def _build_action_handler(
     from transcriber.observability.recorder import OperationRecorder
     from transcriber.safety.audit import AuditLog
     from transcriber.storage.archive import FileDownloadArchive, default_archive_path
+    from transcriber.storage.config_store import ConfigStore, default_config_path
     from transcriber.storage.history import SqliteHistoryRepository, default_history_path
     from transcriber.ui.ascii_art import choose_art, load_art_dir, locate_ascii_dir
     from transcriber.ui.cleanup_flow import CleanupFlow, QuestionaryCleanupFlowPrompts
     from transcriber.ui.download_flow import DownloadFlow, QuestionaryDownloadFlowPrompts
+    from transcriber.ui.history_flow import HistoryFlow
     from transcriber.ui.menu import MenuAction
+    from transcriber.ui.settings_flow import QuestionarySettingsFlowPrompts, SettingsFlow
     from transcriber.ui.subtitle_flow import QuestionarySubtitleFlowPrompts, SubtitleFlow
+    from transcriber.ui.theme import available_themes
     from transcriber.ui.transcribe_flow import QuestionaryTranscribeFlowPrompts, TranscribeFlow
 
     categories: dict[MenuAction, str] = {
@@ -93,11 +97,14 @@ def _build_action_handler(
     )
     cleanup_prompts = QuestionaryCleanupFlowPrompts(translator)
     audit = AuditLog()
+    history = SqliteHistoryRepository(default_history_path())
     recorder = OperationRecorder(
-        history=SqliteHistoryRepository(default_history_path()),
+        history=history,
         logger=FileLogger(default_log_path()),
         report_dir=str(Path(config.paths.download_dir) / "reports"),
     )
+    config_store = ConfigStore(default_config_path())
+    settings_prompts = QuestionarySettingsFlowPrompts(translator)
     success_dir = locate_ascii_dir("success")
     success_art = choose_art(load_art_dir(success_dir)) if success_dir is not None else None
 
@@ -135,6 +142,21 @@ def _build_action_handler(
                 model=config.llm.model,
                 api_key=llm_key,
                 prompts=cleanup_prompts,
+            ).run()
+            return True
+
+        if action is MenuAction.HISTORY:
+            HistoryFlow(history=history, console=console, translator=translator).run()
+            return True
+
+        if action is MenuAction.SETTINGS:
+            SettingsFlow(
+                config=config,
+                store=config_store,
+                console=console,
+                translator=translator,
+                themes=available_themes(),
+                prompts=settings_prompts,
             ).run()
             return True
 
