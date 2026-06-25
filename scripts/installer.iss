@@ -2,7 +2,7 @@
 ; Build the exe first (scripts\build_exe.ps1), then:  ISCC scripts\installer.iss
 ; Bundles only the portable exe — never .env, config, history, logs, or downloads.
 
-#define AppVersion "0.19.0"
+#define AppVersion "0.20.0"
 
 [Setup]
 AppName=Transcriber

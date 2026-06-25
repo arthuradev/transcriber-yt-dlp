@@ -7,7 +7,22 @@ The project follows phase tags: `v0.1.0`, `v0.2.0`, ...
 ## [Unreleased]
 
 ### Planned
-- Phase 20: Public release candidate (final docs, release polish, usability).
+- `v1.0.0` is intentionally **not** planned; it requires explicit owner approval.
+
+## [v0.20.0] - 2026-06-25
+
+### Added
+- Public-facing README polish: bilingual (PT/EN) features, quickstart, optional
+  features, usage, build instructions, and responsible-use/copyright notice.
+- Release-consistency test (`__version__` matches `pyproject` version).
+
+### Changed
+- Bumped the package version from `0.1.0` to `0.20.0` (it had stayed at the
+  initial value while phase tags advanced); aligned the installer version.
+
+### Notes
+- Feature-complete release candidate. All 20 phases are implemented, tagged, and
+  released. `v1.0.0` is intentionally not created (requires explicit approval).
 
 ## [v0.19.0] - 2026-06-24
 

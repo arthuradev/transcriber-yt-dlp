@@ -1,7 +1,7 @@
 # Tasks
 
 ## Current phase
-Phase 19 — Packaging.
+Phase 20 — Public release candidate (final phase).
 
 ## Phase 1 checklist
 - [x] Create public GitHub repository `transcriber-yt-dlp`.
@@ -243,10 +243,22 @@ Phase 19 — Packaging.
 - [x] Update CHANGELOG, TASKS, packaging design doc.
 - [x] Run quality gates (coverage 88% >= 70%).
 - [x] Commit, merge to `main`, tag `v0.19.0`, GitHub Release.
-- [ ] Ask user permission to proceed to Phase 20.
+- [x] Ask user permission to proceed to Phase 20.
+
+## Phase 20 checklist
+- [x] Polish public README (bilingual: features, quickstart, usage, build).
+- [x] Align package version to 0.20.0 (pyproject, __version__, installer).
+- [x] Add release-consistency test.
+- [x] Update CHANGELOG and TASKS.
+- [x] Run quality gates (coverage >= 70%).
+- [x] Commit, merge to `main`, tag `v0.20.0`, GitHub Release.
+- [x] Ask user whether to proceed past v0.20.0.
+
+## Project status
+All 20 phases complete (v0.1.0 ... v0.20.0), tagged and released with green CI.
+`v1.0.0` is intentionally NOT created — it requires explicit owner approval.
 
 ## Backlog notes
-- Real exe/installer build is NOT run in CI/this env (PyInstaller/ISCC absent);
-  scripts + spec are syntax-validated only.
-- Final release candidate (docs, usability) is Phase 20.
-- Do not skip ahead.
+- Real exe/installer build must run on a Windows host (PyInstaller/ISCC).
+- Transcription requires the optional extra + CUDA; not exercised by tests.
+- API keys live in `.env`, never in config.yaml.
